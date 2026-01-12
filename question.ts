@@ -1,16 +1,17 @@
 /**
  * Question Tool - Let the LLM ask the user a question with options
+ * Supports multi-line input for "Other..." option with options visible
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { Text } from "@mariozechner/pi-tui";
+import { Editor, type EditorTheme, Key, matchesKey, Text, truncateToWidth } from "@mariozechner/pi-tui";
 import { Type } from "@sinclair/typebox";
 
 interface QuestionDetails {
 	question: string;
 	options: string[];
 	answer: string | null;
-	wasCustom?: boolean; // true if user selected "Other..." and typed custom answer
+	wasCustom?: boolean;
 }
 
 const QuestionParams = Type.Object({
@@ -18,7 +19,7 @@ const QuestionParams = Type.Object({
 	options: Type.Array(Type.String(), { description: "Options for the user to choose from" }),
 });
 
-export default function (pi: ExtensionAPI) {
+export default function question(pi: ExtensionAPI) {
 	pi.registerTool({
 		name: "question",
 		label: "Question",
@@ -51,9 +52,69 @@ export default function (pi: ExtensionAPI) {
 				};
 			}
 
-			// Handle "Other..." selection with free-text input
+			// Handle "Other..." selection with multi-line editor
 			if (answer === "Other...") {
-				const customAnswer = await ctx.ui.input(`${params.question}`);
+				const customAnswer = await ctx.ui.custom<string | null>((tui, theme, _kb, done) => {
+					let cachedLines: string[] | undefined;
+					
+					const editorTheme: EditorTheme = {
+						borderColor: (s) => theme.fg("accent", s),
+						selectList: {
+							selectedPrefix: (t) => theme.fg("accent", t),
+							selectedText: (t) => theme.fg("accent", t),
+							description: (t) => theme.fg("muted", t),
+							scrollInfo: (t) => theme.fg("dim", t),
+							noMatch: (t) => theme.fg("warning", t),
+						},
+					};
+					const editor = new Editor(editorTheme);
+					
+					editor.onSubmit = (value) => {
+						done(value.trim() || null);
+					};
+
+					function handleInput(data: string) {
+						if (matchesKey(data, Key.escape)) {
+							done(null);
+							return;
+						}
+						editor.handleInput(data);
+						cachedLines = undefined;
+						tui.requestRender();
+					}
+
+					function render(width: number): string[] {
+						if (cachedLines) return cachedLines;
+						
+						const lines: string[] = [];
+						const add = (s: string) => lines.push(truncateToWidth(s, width));
+
+						add(theme.fg("accent", "─".repeat(width)));
+						add(theme.fg("text", " " + params.question));
+						lines.push("");
+						
+						// Show options for reference
+						for (let i = 0; i < params.options.length; i++) {
+							add("  " + theme.fg("text", `${i + 1}. ${params.options[i]}`));
+						}
+						add("  " + theme.fg("accent", `${params.options.length + 1}. Other... ✎`));
+						
+						lines.push("");
+						add(theme.fg("muted", " Your answer:"));
+						for (const line of editor.render(width - 2)) {
+							add(" " + line);
+						}
+						lines.push("");
+						add(theme.fg("dim", " Enter to submit • Esc to cancel"));
+						add(theme.fg("accent", "─".repeat(width)));
+
+						cachedLines = lines;
+						return lines;
+					}
+
+					return { render, invalidate: () => { cachedLines = undefined; }, handleInput };
+				});
+
 				if (!customAnswer) {
 					return {
 						content: [{ type: "text", text: "User cancelled the input" }],
@@ -75,7 +136,6 @@ export default function (pi: ExtensionAPI) {
 		renderCall(args, theme) {
 			let text = theme.fg("toolTitle", theme.bold("question ")) + theme.fg("muted", args.question);
 			if (args.options?.length) {
-				// Show options including "Other..." that will be added
 				const displayOptions = [...args.options, "Other..."];
 				text += `\n${theme.fg("dim", `  Options: ${displayOptions.join(", ")}`)}`;
 			}
@@ -93,7 +153,6 @@ export default function (pi: ExtensionAPI) {
 				return new Text(theme.fg("warning", "Cancelled"), 0, 0);
 			}
 
-			// Distinguish between selected option vs custom written answer
 			if (details.wasCustom) {
 				return new Text(theme.fg("success", "✓ ") + theme.fg("muted", "(wrote) ") + theme.fg("accent", details.answer), 0, 0);
 			}
