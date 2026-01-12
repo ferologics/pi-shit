@@ -89,3 +89,7 @@ End with:
 - **Should discuss**: [count] issues
 - **Overall**: [brief assessment]
 ```
+
+---
+
+_Adapted from [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review)_

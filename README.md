@@ -7,7 +7,7 @@ My custom skills for [Pi](https://github.com/badlogic/pi-mono).
 | Skill | Description | Source |
 |-------|-------------|--------|
 | **brave-search** | Web search via Brave Search API | [badlogic/pi-skills](https://github.com/badlogic/pi-skills/tree/main/brave-search) |
-| **code-review** | Local PR review for bugs, style, guidelines | Original |
+| **code-review** | Local PR review for bugs, style, guidelines | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-review) |
 | **code-simplifier** | Simplify/refine code for clarity | [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/code-simplifier) |
 | **markdown-converter** | Convert files to Markdown via `uvx markitdown` | [steipete/agent-scripts](https://github.com/steipete/agent-scripts/tree/main/skills/markdown-converter) |
 | **youtube-transcript** | Fetch YouTube transcripts (any language) via `yt-dlp` | Original |
