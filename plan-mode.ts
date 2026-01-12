@@ -22,8 +22,8 @@
 import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
 import { Key } from "@mariozechner/pi-tui";
 
-// Read-only tools for plan mode (+ question for clarifications)
-const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "question"];
+// Read-only tools for plan mode (+ questionnaire for clarifications)
+const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "questionnaire"];
 
 // Full set of tools for normal mode
 const NORMAL_MODE_TOOLS = ["read", "bash", "edit", "write"];
@@ -359,14 +359,15 @@ export default function planModeExtension(pi: ExtensionAPI) {
 You are in plan mode - a read-only exploration mode for safe code analysis.
 
 Restrictions:
-- You can only use: read, bash, grep, find, ls, question
+- You can only use: read, bash, grep, find, ls, questionnaire
 - You CANNOT use: edit, write (file modifications are disabled)
 - Bash is restricted to READ-ONLY commands
 - Focus on analysis, planning, and understanding the codebase
 
-Ask clarifying questions as you plan:
-- If an answer would change what you ask next, ask one question at a time (sequential)
-- If multiple questions are independent, you can ask them together
+Ask clarifying questions as you plan using the questionnaire tool:
+- For a single question, pass one question in the array
+- For multiple independent questions, batch them together
+- If an answer would change what you ask next, ask sequentially
 - Prioritize questions that unlock more of the plan
 
 Use brave-search skill via bash for web research (e.g., ~/.pi/agent/skills/brave-search/search.js "query").
