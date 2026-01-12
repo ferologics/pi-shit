@@ -52,7 +52,7 @@ export default function (pi: ExtensionAPI) {
 
 			// Handle "Other..." selection with free-text input
 			if (answer === "Other...") {
-				const customAnswer = await ctx.ui.input("Your answer:");
+				const customAnswer = await ctx.ui.input(`${params.question}`);
 				if (!customAnswer) {
 					return {
 						content: [{ type: "text", text: "User cancelled the input" }],
