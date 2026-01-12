@@ -175,15 +175,18 @@ function cleanStepText(text: string): string {
 function extractTodoItems(message: string): TodoItem[] {
 	const items: TodoItem[] = [];
 
-	// Only extract from explicit plan sections - look for "Plan:" or "## Plan" headers
-	const planSectionPattern = /(?:^|\n)(?:#{1,3}\s*)?(?:\*{2})?Plan(?:\*{2})?[:\s]*\n([\s\S]*?)(?=\n#{1,3}\s|\n\*{2}[^*]+\*{2}:|\n---|\n$|$)/gi;
-	const planMatch = planSectionPattern.exec(message);
+	// Look for "Plan:" header and extract numbered list after it
+	// Handle optional ** (bold) after colon: **Plan:** or Plan:
+	const planHeaderPattern = /Plan:\*{0,2}\s*\n/i;
+	const headerMatch = message.match(planHeaderPattern);
 	
-	if (!planMatch) {
+	if (!headerMatch) {
 		return items; // No explicit plan section found
 	}
 
-	const planSection = planMatch[1];
+	// Get content after the Plan: header
+	const startIndex = message.indexOf(headerMatch[0]) + headerMatch[0].length;
+	const planSection = message.slice(startIndex);
 
 	// Match numbered lists: "1. Task" or "1) Task" - also handle **bold** prefixes
 	const numberedPattern = /^\s*(\d+)[.)]\s+\*{0,2}([^*\n]+)/gm;
