@@ -22,8 +22,8 @@
 import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
 import { Key } from "@mariozechner/pi-tui";
 
-// Read-only tools for plan mode (+ question for clarifications)
-const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "question"];
+// Read-only tools for plan mode (+ question for clarifications, brave-search for research)
+const PLAN_MODE_TOOLS = ["read", "bash", "grep", "find", "ls", "question", "brave-search"];
 
 // Full set of tools for normal mode
 const NORMAL_MODE_TOOLS = ["read", "bash", "edit", "write"];
@@ -364,12 +364,17 @@ export default function planModeExtension(pi: ExtensionAPI) {
 You are in plan mode - a read-only exploration mode for safe code analysis.
 
 Restrictions:
-- You can only use: read, bash, grep, find, ls, question
+- You can only use: read, bash, grep, find, ls, question, brave-search
 - You CANNOT use: edit, write (file modifications are disabled)
 - Bash is restricted to READ-ONLY commands
 - Focus on analysis, planning, and understanding the codebase
 
-As you explore, use the question tool to ask clarifying questions when you encounter ambiguity, decisions that need user input, or multiple valid approaches. Incorporate the answers into your plan.
+Ask clarifying questions as you plan:
+- If an answer would change what you ask next, ask one question at a time (sequential)
+- If multiple questions are independent, you can ask them together
+- Prioritize questions that unlock more of the plan
+
+Use brave-search for researching documentation, APIs, or solutions online.
 
 Create a detailed numbered plan:
 1. First step description

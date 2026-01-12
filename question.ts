@@ -10,6 +10,7 @@ interface QuestionDetails {
 	question: string;
 	options: string[];
 	answer: string | null;
+	wasCustom?: boolean; // true if user selected "Other..." and typed custom answer
 }
 
 const QuestionParams = Type.Object({
@@ -56,12 +57,12 @@ export default function (pi: ExtensionAPI) {
 				if (!customAnswer) {
 					return {
 						content: [{ type: "text", text: "User cancelled the input" }],
-						details: { question: params.question, options: params.options, answer: null } as QuestionDetails,
+						details: { question: params.question, options: params.options, answer: null, wasCustom: false } as QuestionDetails,
 					};
 				}
 				return {
 					content: [{ type: "text", text: `User wrote: ${customAnswer}` }],
-					details: { question: params.question, options: params.options, answer: customAnswer } as QuestionDetails,
+					details: { question: params.question, options: params.options, answer: customAnswer, wasCustom: true } as QuestionDetails,
 				};
 			}
 
@@ -74,7 +75,9 @@ export default function (pi: ExtensionAPI) {
 		renderCall(args, theme) {
 			let text = theme.fg("toolTitle", theme.bold("question ")) + theme.fg("muted", args.question);
 			if (args.options?.length) {
-				text += `\n${theme.fg("dim", `  Options: ${args.options.join(", ")}`)}`;
+				// Show options including "Other..." that will be added
+				const displayOptions = [...args.options, "Other..."];
+				text += `\n${theme.fg("dim", `  Options: ${displayOptions.join(", ")}`)}`;
 			}
 			return new Text(text, 0, 0);
 		},
@@ -90,6 +93,10 @@ export default function (pi: ExtensionAPI) {
 				return new Text(theme.fg("warning", "Cancelled"), 0, 0);
 			}
 
+			// Distinguish between selected option vs custom written answer
+			if (details.wasCustom) {
+				return new Text(theme.fg("success", "✓ ") + theme.fg("muted", "(wrote) ") + theme.fg("accent", details.answer), 0, 0);
+			}
 			return new Text(theme.fg("success", "✓ ") + theme.fg("accent", details.answer), 0, 0);
 		},
 	});
