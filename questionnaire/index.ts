@@ -84,7 +84,7 @@ export default function questionnaire(pi: ExtensionAPI) {
 			// Normalize questions with defaults
 			const questions: Question[] = params.questions.map((q, i) => ({
 				...q,
-				label: q.label || `Q${i + 1}`,
+				label: q.label || truncateToWidth(q.prompt, 20) || `Q${i + 1}`,
 				allowOther: q.allowOther !== false,
 			}));
 
