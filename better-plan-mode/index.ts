@@ -200,9 +200,20 @@ function extractTodoItems(message: string): TodoItem[] {
 	return items;
 }
 
-export default function planModeExtension(pi: ExtensionAPI) {
+function extractDoneSteps(message: string): number[] {
+	const steps: number[] = [];
+	const donePattern = /\[DONE:(\d+)\]/gi;
+	for (const match of message.matchAll(donePattern)) {
+		const step = Number(match[1]);
+		if (Number.isFinite(step)) {
+			steps.push(step);
+		}
+	}
+	return steps;
+}
+
+export default function planModeExtension(pi: ExtensionAPI): void {
 	let planModeEnabled = false;
-	let toolsCalledThisTurn = false;
 	let executionMode = false;
 	let todoItems: TodoItem[] = [];
 
@@ -307,21 +318,6 @@ export default function planModeExtension(pi: ExtensionAPI) {
 		}
 	});
 
-	// Track step completion based on tool results
-	pi.on("tool_result", async (event, ctx) => {
-		toolsCalledThisTurn = true;
-
-		if (!executionMode || todoItems.length === 0) return;
-		if (event.isError) return;
-
-		// Mark the first uncompleted step as done when any tool succeeds
-		const nextStep = todoItems.find((t) => !t.completed);
-		if (nextStep) {
-			nextStep.completed = true;
-			updateStatus(ctx);
-		}
-	});
-
 	// Filter out stale plan mode context messages from LLM context
 	// This ensures the agent only sees the CURRENT state (plan mode on/off)
 	pi.on("context", async (event) => {
@@ -393,7 +389,8 @@ Do NOT attempt to make changes - just describe what you would do.`,
 Remaining steps:
 ${todoList}
 
-Execute each step in order.`,
+Execute each step in order.
+After completing a step, include a [DONE:n] tag in your response.`,
 					display: false,
 				},
 			};
@@ -404,6 +401,27 @@ Execute each step in order.`,
 	pi.on("agent_end", async (event, ctx) => {
 		// In execution mode, check if all steps complete
 		if (executionMode && todoItems.length > 0) {
+			const lastAssistant = [...event.messages].reverse().find((m) => m.role === "assistant");
+			if (lastAssistant && Array.isArray(lastAssistant.content)) {
+				const textContent = lastAssistant.content
+					.filter((block): block is { type: "text"; text: string } => block.type === "text")
+					.map((block) => block.text)
+					.join("\n");
+
+				if (textContent) {
+					const doneSteps = extractDoneSteps(textContent);
+					if (doneSteps.length > 0) {
+						for (const step of doneSteps) {
+							const item = todoItems.find((t) => t.step === step);
+							if (item) {
+								item.completed = true;
+							}
+						}
+						updateStatus(ctx);
+					}
+				}
+			}
+
 			const allComplete = todoItems.every((t) => t.completed);
 			if (allComplete) {
 				// Show final completed list in chat
@@ -487,9 +505,10 @@ Execute each step in order.`,
 				{ triggerTurn: true },
 			);
 		} else if (choice === "Refine the plan") {
-			const refinement = await ctx.ui.input("What should be refined?");
-			if (refinement) {
-				ctx.ui.setEditorText(refinement);
+			const refinement = await ctx.ui.editor("Refine the plan:", "");
+			const trimmedRefinement = refinement?.trim();
+			if (trimmedRefinement) {
+				pi.sendUserMessage(trimmedRefinement);
 			}
 		}
 	});
@@ -523,9 +542,8 @@ Execute each step in order.`,
 		updateStatus(ctx);
 	});
 
-	// Reset tool tracking at start of each turn and persist state
+	// Persist state at start of each turn
 	pi.on("turn_start", async () => {
-		toolsCalledThisTurn = false;
 		pi.appendEntry("plan-mode", {
 			enabled: planModeEnabled,
 			todos: todoItems,
@@ -533,18 +551,4 @@ Execute each step in order.`,
 		});
 	});
 
-	// Handle non-tool turns (e.g., analysis, explanation steps)
-	pi.on("turn_end", async (_event, ctx) => {
-		if (!executionMode || todoItems.length === 0) return;
-
-		// If no tools were called this turn, the agent was doing analysis/explanation
-		// Mark the next uncompleted step as done
-		if (!toolsCalledThisTurn) {
-			const nextStep = todoItems.find((t) => !t.completed);
-			if (nextStep) {
-				nextStep.completed = true;
-				updateStatus(ctx);
-			}
-		}
-	});
 }
