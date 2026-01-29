@@ -1,9 +1,9 @@
 ---
-name: deep-review
+name: multi-review
 description: Multi-model code review. Runs code-review skill with 3 models in parallel, then synthesizes findings.
 ---
 
-# Deep Review
+# Multi Review
 
 Runs the `code-review` skill with 3 different models in parallel, then synthesizes.
 
@@ -17,9 +17,9 @@ Runs the `code-review` skill with 3 different models in parallel, then synthesiz
 
 2. **Run 3 parallel reviews via bash**
    ```bash
-   pi --model claude-opus-4-5 "Read and follow ~/.pi/agent/skills/code-review/SKILL.md to review the PR. Diff is at /tmp/pr-diff.txt" > /tmp/review-opus.md &
-   pi --model gpt-5.2-codex "Read and follow ~/.pi/agent/skills/code-review/SKILL.md to review the PR. Diff is at /tmp/pr-diff.txt" > /tmp/review-codex.md &
-   pi --model gemini-2.5-pro "Read and follow ~/.pi/agent/skills/code-review/SKILL.md to review the PR. Diff is at /tmp/pr-diff.txt" > /tmp/review-gemini.md &
+   pi --model claude-opus-4-5 "Read and follow ~/dev/pi-skills/code-review/SKILL.md to review the PR. Diff is at /tmp/pr-diff.txt" > /tmp/review-opus.md &
+   pi --model gpt-5.2-codex "Read and follow ~/dev/pi-skills/code-review/SKILL.md to review the PR. Diff is at /tmp/pr-diff.txt" > /tmp/review-codex.md &
+   pi --model gemini-2.5-pro "Read and follow ~/dev/pi-skills/code-review/SKILL.md to review the PR. Diff is at /tmp/pr-diff.txt" > /tmp/review-gemini.md &
    wait
    ```
 
