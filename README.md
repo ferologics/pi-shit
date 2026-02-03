@@ -15,8 +15,8 @@ OSC 777 is terminal-dependent, not OS-dependent. Works on macOS, Linux, etc. if 
 | WezTerm | ✓ | Native |
 | rxvt-unicode | ✓ | Originated here |
 | Kitty | ✗ | Uses OSC 99 instead |
+| Windows Terminal | ✓ | Powershell based toast |
 | Terminal.app | ✗ | No support |
-| Windows Terminal | ✗ | No support |
 | Alacritty | ✗ | No support |
 
 ## Install
@@ -54,6 +54,8 @@ ESC ] 777 ; notify ; Pi ; Ready for input BEL
 ```
 
 The terminal interprets this and shows a native notification. Clicking the notification focuses the terminal window/tab.
+
+For Windows Terminal in WSL (detected via the `WT_SESSION` environment variable), it calls `powershell.exe` to show a native Windows toast notification instead.
 
 ## What's OSC 777?
 
