@@ -23,6 +23,26 @@ Add to `~/.pi/agent/settings.json`:
 ```json
 {
   "packages": [
+    "npm:@ferologics/pi-skills"
+  ]
+}
+```
+
+Or via git (always latest):
+
+```json
+{
+  "packages": [
+    "git:github.com/ferologics/pi-skills"
+  ]
+}
+```
+
+Or local clone:
+
+```json
+{
+  "packages": [
     "~/dev/pi-skills"
   ]
 }
@@ -36,6 +56,9 @@ Some skills need extra setup:
 # brave-search
 cd ~/dev/pi-skills/brave-search && npm install
 # Also set BRAVE_API_KEY env var
+
+# image-compress
+# No deps - uses macOS built-in sips
 
 # session-analyzer
 cd ~/dev/pi-skills/session-analyzer && npm install

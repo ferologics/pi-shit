@@ -1,14 +1,19 @@
 {
-  "name": "pi-skills",
-  "version": "1.0.0",
+  "name": "@ferologics/pi-skills",
+  "version": "1.0.1",
   "description": "Custom skills for Pi coding agent",
   "keywords": ["pi-package"],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ferologics/pi-skills.git"
+  },
   "pi": {
     "skills": [
       "brave-search",
       "code-review",
       "code-simplifier",
+      "image-compress",
       "markdown-converter",
       "multi-review",
       "session-analyzer",
