@@ -1,6 +1,6 @@
 {
     "name": "pi-notify",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Desktop notifications for Pi agent via OSC 777/99 and Windows toast",
     "keywords": ["pi-package", "pi", "pi-coding-agent", "notifications", "osc"],
     "author": "ferologics",
@@ -14,6 +14,7 @@
         "url": "https://github.com/ferologics/pi-notify/issues"
     },
     "pi": {
-        "extensions": ["index.ts"]
+        "extensions": ["index.ts"],
+        "video": "https://github.com/ferologics/pi-notify/raw/refs/heads/main/demo.mp4"
     }
 }
