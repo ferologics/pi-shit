@@ -18,34 +18,14 @@ My custom skills for [Pi](https://github.com/badlogic/pi-mono).
 
 ## Install
 
-Add to `~/.pi/agent/settings.json`:
-
-```json
-{
-  "packages": [
-    "npm:@ferologics/pi-skills"
-  ]
-}
+```bash
+pi install npm:@ferologics/pi-skills
 ```
 
 Or via git (always latest):
 
-```json
-{
-  "packages": [
-    "git:github.com/ferologics/pi-skills"
-  ]
-}
-```
-
-Or local clone:
-
-```json
-{
-  "packages": [
-    "~/dev/pi-skills"
-  ]
-}
+```bash
+pi install git:github.com/ferologics/pi-skills
 ```
 
 ### Dependencies
