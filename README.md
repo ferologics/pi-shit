@@ -1,67 +1,43 @@
 # pi-notify
 
-A simple [Pi](https://github.com/badlogic/pi-mono) extension that sends a native desktop notification when the agent finishes and is waiting for input.
-
-Uses **OSC 777** escape sequence - no external dependencies.
+A [Pi](https://github.com/badlogic/pi-mono) extension that sends a native desktop notification when the agent finishes and is waiting for input.
 
 ## Compatibility
 
-OSC 777 is terminal-dependent, not OS-dependent. Works on macOS, Linux, etc. if your terminal supports it.
-
-| Terminal | Support | Notes |
-|----------|---------|-------|
-| Ghostty | ✓ | Native |
-| iTerm2 | ✓ | Native |
-| WezTerm | ✓ | Native |
-| rxvt-unicode | ✓ | Originated here |
-| Kitty | ✗ | Uses OSC 99 instead |
-| Windows Terminal | ✓ | Powershell based toast |
-| Terminal.app | ✗ | No support |
-| Alacritty | ✗ | No support |
+| Terminal | Support | Protocol |
+|----------|---------|----------|
+| Ghostty | ✓ | OSC 777 |
+| iTerm2 | ✓ | OSC 777 |
+| WezTerm | ✓ | OSC 777 |
+| rxvt-unicode | ✓ | OSC 777 |
+| Kitty | ✓ | OSC 99 |
+| Windows Terminal | ✓ | PowerShell toast |
+| Terminal.app | ✗ | — |
+| Alacritty | ✗ | — |
 
 ## Install
 
-Copy to Pi extensions:
-
 ```bash
-cp index.ts ~/.pi/agent/extensions/pi-notify.ts
-```
-
-Or symlink for easy updates:
-
-```bash
-ln -s /path/to/pi-notify/index.ts ~/.pi/agent/extensions/pi-notify.ts
-```
-
-Add to `~/.pi/agent/extensions` in `~/.pi/agent/settings.json`:
-
-```json
-{
-  "extensions": [
-    "~/.pi/agent/extensions/pi-notify.ts"
-  ]
-}
+pi install git:github.com/ferologics/pi-notify
 ```
 
 Restart Pi.
 
 ## How it works
 
-When Pi's agent finishes (`agent_end` event), the extension writes an OSC 777 escape sequence to stdout:
+When Pi's agent finishes (`agent_end` event), the extension sends a notification via the appropriate protocol:
 
-```
-ESC ] 777 ; notify ; Pi ; Ready for input BEL
-```
+- **OSC 777** (Ghostty, iTerm2, WezTerm, rxvt-unicode): Native escape sequence
+- **OSC 99** (Kitty): Kitty's notification protocol, detected via `KITTY_WINDOW_ID`
+- **Windows toast** (Windows Terminal): PowerShell notification, detected via `WT_SESSION`
 
-The terminal interprets this and shows a native notification. Clicking the notification focuses the terminal window/tab.
+Clicking the notification focuses the terminal window/tab.
 
-For Windows Terminal in WSL (detected via the `WT_SESSION` environment variable), it calls `powershell.exe` to show a native Windows toast notification instead.
-
-## What's OSC 777?
+## What's OSC 777/99?
 
 OSC = Operating System Command, part of ANSI escape sequences. Terminals use these for things beyond text formatting (change title, colors, notifications, etc.).
 
-`777` is the number rxvt-unicode picked for notifications. Ghostty, iTerm2, WezTerm adopted it. Kitty went their own way with OSC 99.
+`777` is the number rxvt-unicode picked for notifications. Ghostty, iTerm2, WezTerm adopted it. Kitty uses `99` with a more extensible protocol.
 
 ## License
 

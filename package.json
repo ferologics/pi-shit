@@ -1,0 +1,10 @@
+{
+    "name": "pi-notify",
+    "version": "1.0.0",
+    "description": "Desktop notifications for Pi agent",
+    "keywords": ["pi-package"],
+    "license": "MIT",
+    "pi": {
+        "extensions": ["index.ts"]
+    }
+}
