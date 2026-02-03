@@ -18,6 +18,12 @@ A [Pi](https://github.com/badlogic/pi-mono) extension that sends a native deskto
 ## Install
 
 ```bash
+pi install npm:pi-notify
+```
+
+Or via git:
+
+```bash
 pi install git:github.com/ferologics/pi-notify
 ```
 
