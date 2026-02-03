@@ -2,6 +2,8 @@
 
 A [Pi](https://github.com/badlogic/pi-mono) extension that sends a native desktop notification when the agent finishes and is waiting for input.
 
+![pi-notify demo](demo.gif)
+
 ## Compatibility
 
 | Terminal | Support | Protocol |
