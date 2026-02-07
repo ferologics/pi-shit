@@ -4,10 +4,19 @@
  * optionally spawns subagents to analyze patterns.
  */
 
-import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync } from "fs";
+import {
+    copyFileSync,
+    existsSync,
+    mkdirSync,
+    mkdtempSync,
+    readFileSync,
+    readdirSync,
+    rmSync,
+    writeFileSync,
+} from "fs";
 import { spawn } from "child_process";
 import { createInterface } from "readline";
-import { homedir } from "os";
+import { homedir, tmpdir } from "os";
 import { join, resolve } from "path";
 import { parseSessionEntries } from "@mariozechner/pi-coding-agent";
 
@@ -47,6 +56,34 @@ function truncateLine(text, maxWidth) {
     const singleLine = text.replace(/\n/g, " ").replace(/\s+/g, " ").trim();
     if (singleLine.length <= maxWidth) return singleLine;
     return singleLine.slice(0, maxWidth - 3) + "...";
+}
+
+function splitOversizedTranscript(transcript, maxChars) {
+    if (transcript.length <= maxChars) return [transcript];
+
+    const chunks = [];
+    let cursor = 0;
+
+    while (cursor < transcript.length) {
+        let end = Math.min(cursor + maxChars, transcript.length);
+
+        if (end < transcript.length) {
+            const newlineIdx = transcript.lastIndexOf("\n", end);
+            const minimumSplit = cursor + Math.floor(maxChars * 0.6);
+            if (newlineIdx >= minimumSplit) {
+                end = newlineIdx;
+            }
+        }
+
+        chunks.push(transcript.slice(cursor, end));
+
+        cursor = end;
+        if (transcript[cursor] === "\n") {
+            cursor++;
+        }
+    }
+
+    return chunks;
 }
 
 function runSubagent(prompt, cwd) {
@@ -202,42 +239,43 @@ async function main() {
     let currentContent = "";
     let fileIndex = 0;
 
+    function flushCurrentContent() {
+        if (currentContent.length === 0) return;
+
+        const filename = `session-transcripts-${String(fileIndex).padStart(3, "0")}.txt`;
+        writeFileSync(join(outputDir, filename), currentContent);
+        outputFiles.push(filename);
+        console.log(`Wrote ${filename} (${currentContent.length} chars)`);
+
+        currentContent = "";
+        fileIndex++;
+    }
+
     for (const transcript of allTranscripts) {
-        if (currentContent.length > 0 && currentContent.length + transcript.length + 2 > MAX_CHARS_PER_FILE) {
-            const filename = `session-transcripts-${String(fileIndex).padStart(3, "0")}.txt`;
-            writeFileSync(join(outputDir, filename), currentContent);
-            outputFiles.push(filename);
-            console.log(`Wrote ${filename} (${currentContent.length} chars)`);
-            currentContent = "";
-            fileIndex++;
+        if (transcript.length > MAX_CHARS_PER_FILE) {
+            flushCurrentContent();
+
+            const chunks = splitOversizedTranscript(transcript, MAX_CHARS_PER_FILE);
+            chunks.forEach((chunk, chunkIndex) => {
+                const filename = `session-transcripts-${String(fileIndex).padStart(3, "0")}.txt`;
+                writeFileSync(join(outputDir, filename), chunk);
+                outputFiles.push(filename);
+                console.log(
+                    `Wrote ${filename} (${chunk.length} chars) - split chunk ${chunkIndex + 1}/${chunks.length}`
+                );
+                fileIndex++;
+            });
+            continue;
         }
 
-        if (transcript.length > MAX_CHARS_PER_FILE) {
-            if (currentContent.length > 0) {
-                const filename = `session-transcripts-${String(fileIndex).padStart(3, "0")}.txt`;
-                writeFileSync(join(outputDir, filename), currentContent);
-                outputFiles.push(filename);
-                console.log(`Wrote ${filename} (${currentContent.length} chars)`);
-                currentContent = "";
-                fileIndex++;
-            }
-            const filename = `session-transcripts-${String(fileIndex).padStart(3, "0")}.txt`;
-            writeFileSync(join(outputDir, filename), transcript);
-            outputFiles.push(filename);
-            console.log(`Wrote ${filename} (${transcript.length} chars) - oversized`);
-            fileIndex++;
-            continue;
+        if (currentContent.length > 0 && currentContent.length + transcript.length + 2 > MAX_CHARS_PER_FILE) {
+            flushCurrentContent();
         }
 
         currentContent += (currentContent ? "\n\n" : "") + transcript;
     }
 
-    if (currentContent.length > 0) {
-        const filename = `session-transcripts-${String(fileIndex).padStart(3, "0")}.txt`;
-        writeFileSync(join(outputDir, filename), currentContent);
-        outputFiles.push(filename);
-        console.log(`Wrote ${filename} (${currentContent.length} chars)`);
-    }
+    flushCurrentContent();
 
     console.log(`\nCreated ${outputFiles.length} transcript file(s) in ${outputDir}`);
 
@@ -283,10 +321,17 @@ Rules:
 - Do not include any other text outside this format`;
 
     console.log("\nSpawning subagents for analysis...");
+    const createdSummaryFiles = [];
+
     for (const file of outputFiles) {
         const summaryFile = file.replace(".txt", ".summary.txt");
         const filePath = join(outputDir, file);
         const summaryPath = join(outputDir, summaryFile);
+
+        if (!existsSync(filePath)) {
+            console.error(`Skipping ${file} - transcript file missing`);
+            continue;
+        }
 
         const fileContent = readFileSync(filePath, "utf8");
         const fileSize = fileContent.length;
@@ -299,22 +344,32 @@ Rules:
         console.log(`Analyzing ${file} (${fileSize} chars)...`);
 
         const lineCount = fileContent.split("\n").length;
-        const fullPrompt = `${analysisPrompt}\n\nThe file ${filePath} has ${lineCount} lines. Read it in full using chunked reads, then write your analysis to ${summaryPath}`;
+        const analysisCwd = mkdtempSync(join(tmpdir(), "pi-session-analyzer-"));
+        const isolatedTranscriptPath = join(analysisCwd, "transcript.txt");
+        const isolatedSummaryPath = join(analysisCwd, "summary.txt");
 
-        const result = await runSubagent(fullPrompt, outputDir);
+        writeFileSync(isolatedTranscriptPath, fileContent);
 
-        if (result.success && existsSync(summaryPath)) {
-            console.log(`  -> ${summaryFile}`);
-        } else if (result.success) {
-            console.error(`  Agent finished but did not write ${summaryFile}`);
-        } else {
-            console.error(`  Failed to analyze ${file}`);
+        const fullPrompt = `${analysisPrompt}\n\nThe file ${isolatedTranscriptPath} has ${lineCount} lines. Read it in full using chunked reads, then write your analysis to ${isolatedSummaryPath}`;
+
+        try {
+            const result = await runSubagent(fullPrompt, analysisCwd);
+
+            if (result.success && existsSync(isolatedSummaryPath)) {
+                copyFileSync(isolatedSummaryPath, summaryPath);
+                console.log(`  -> ${summaryFile}`);
+                createdSummaryFiles.push(summaryFile);
+            } else if (result.success) {
+                console.error(`  Agent finished but did not write ${summaryFile}`);
+            } else {
+                console.error(`  Failed to analyze ${file}`);
+            }
+        } finally {
+            rmSync(analysisCwd, { recursive: true, force: true });
         }
     }
 
-    const summaryFiles = readdirSync(outputDir)
-        .filter((f) => f.endsWith(".summary.txt"))
-        .sort();
+    const summaryFiles = [...createdSummaryFiles].sort();
 
     console.log(`\n=== Individual Analysis Complete ===`);
     console.log(`Created ${summaryFiles.length} summary files`);
@@ -326,8 +381,18 @@ Rules:
 
     console.log("\nAggregating findings into final summary...");
 
-    const summaryPaths = summaryFiles.map((f) => join(outputDir, f)).join("\n");
     const finalSummaryPath = join(outputDir, "FINAL-SUMMARY.txt");
+    const aggregationCwd = mkdtempSync(join(tmpdir(), "pi-session-analyzer-aggregate-"));
+
+    const isolatedSummaryPaths = summaryFiles.map((file, index) => {
+        const sourcePath = join(outputDir, file);
+        const targetPath = join(aggregationCwd, `summary-${String(index).padStart(3, "0")}.txt`);
+        copyFileSync(sourcePath, targetPath);
+        return targetPath;
+    });
+
+    const summaryPaths = isolatedSummaryPaths.join("\n");
+    const isolatedFinalSummaryPath = join(aggregationCwd, "FINAL-SUMMARY.txt");
 
     const aggregationPrompt = `You are aggregating pattern analysis results from multiple summary files.
 
@@ -373,17 +438,22 @@ Draft:
 - Patterns by type: agents-md (<N>), skill (<N>), prompt-template (<N>)
 - Top 3 most frequent patterns: <list>
 
-Write the final summary to ${finalSummaryPath}`;
+Write the final summary to ${isolatedFinalSummaryPath}`;
 
-    const aggregateResult = await runSubagent(aggregationPrompt, outputDir);
+    try {
+        const aggregateResult = await runSubagent(aggregationPrompt, aggregationCwd);
 
-    if (aggregateResult.success && existsSync(finalSummaryPath)) {
-        console.log(`\n=== Final Summary Created ===`);
-        console.log(`  ${finalSummaryPath}`);
-    } else if (aggregateResult.success) {
-        console.error(`Agent finished but did not write final summary`);
-    } else {
-        console.error(`Failed to create final summary`);
+        if (aggregateResult.success && existsSync(isolatedFinalSummaryPath)) {
+            copyFileSync(isolatedFinalSummaryPath, finalSummaryPath);
+            console.log(`\n=== Final Summary Created ===`);
+            console.log(`  ${finalSummaryPath}`);
+        } else if (aggregateResult.success) {
+            console.error(`Agent finished but did not write final summary`);
+        } else {
+            console.error(`Failed to create final summary`);
+        }
+    } finally {
+        rmSync(aggregationCwd, { recursive: true, force: true });
     }
 }
 
