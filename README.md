@@ -41,6 +41,34 @@ When Pi's agent finishes (`agent_end` event), the extension sends a notification
 
 Clicking the notification focuses the terminal window/tab.
 
+## Optional: Custom sound hook
+
+You can run a custom command whenever a notification is sent by setting `PI_NOTIFY_SOUND_CMD`.
+
+This keeps the extension tiny and cross-platform: you choose the command for your OS.
+
+> Note: This is an additional sound hook. It does not replace native terminal/system notification sounds.
+
+### Example (macOS)
+
+```fish
+set -Ux PI_NOTIFY_SOUND_CMD 'afplay ~/Library/Sounds/Glass.aiff'
+```
+
+### Example (Linux)
+
+```bash
+export PI_NOTIFY_SOUND_CMD='paplay /usr/share/sounds/freedesktop/stereo/complete.oga'
+```
+
+### Example (Windows PowerShell)
+
+```powershell
+$env:PI_NOTIFY_SOUND_CMD = 'powershell -NoProfile -Command "[console]::beep(880,180)"'
+```
+
+The command is run in the background (`shell: true`, detached) so it won't block Pi.
+
 ## What's OSC 777/99?
 
 OSC = Operating System Command, part of ANSI escape sequences. Terminals use these for things beyond text formatting (change title, colors, notifications, etc.).

@@ -6,6 +6,7 @@
  * - OSC 777: Ghostty, iTerm2, WezTerm, rxvt-unicode
  * - OSC 99: Kitty
  * - Windows toast: Windows Terminal (WSL)
+ * - Optional sound hook via PI_NOTIFY_SOUND_CMD
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
@@ -38,6 +39,23 @@ function notifyWindows(title: string, body: string): void {
     execFile("powershell.exe", ["-NoProfile", "-Command", windowsToastScript(title, body)]);
 }
 
+function runSoundHook(): void {
+    const command = process.env.PI_NOTIFY_SOUND_CMD?.trim();
+    if (!command) return;
+
+    try {
+        const { spawn } = require("child_process");
+        const child = spawn(command, {
+            shell: true,
+            detached: true,
+            stdio: "ignore",
+        });
+        child.unref();
+    } catch {
+        // Ignore hook errors to avoid breaking notifications
+    }
+}
+
 function notify(title: string, body: string): void {
     if (process.env.WT_SESSION) {
         notifyWindows(title, body);
@@ -46,6 +64,8 @@ function notify(title: string, body: string): void {
     } else {
         notifyOSC777(title, body);
     }
+
+    runSoundHook();
 }
 
 export default function (pi: ExtensionAPI) {
