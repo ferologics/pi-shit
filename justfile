@@ -21,6 +21,10 @@ update:
     @just update-skills
     @just update-extensions
     @just update-themes
+    @just regen-manifest
+
+regen-manifest:
+    node scripts/regen-pi-manifest.mjs
 
 update-skills skills-branch="master":
     git subtree pull --prefix=skills pi-skills {{skills-branch}}

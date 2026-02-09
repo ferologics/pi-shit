@@ -2,7 +2,12 @@
     "name": "pi-shit",
     "version": "0.1.0",
     "description": "Personal Pi package bundling extensions, skills, and Rose Pine themes",
-    "keywords": ["pi-package", "pi-extension", "pi-skill", "pi-theme"],
+    "keywords": [
+        "pi-package",
+        "pi-extension",
+        "pi-skill",
+        "pi-theme"
+    ],
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -10,19 +15,33 @@
     },
     "files": [
         "README.md",
-        "extensions/deep-review",
-        "extensions/plan-mode",
-        "extensions/pi-notify/index.ts",
-        "extensions/pi-notify/LICENSE",
-        "extensions/pi-notify/package.json",
-        "extensions/pi-notify/README.md",
+        "extensions",
         "skills",
         "themes"
     ],
     "pi": {
-        "extensions": ["extensions/**/index.ts"],
-        "skills": ["skills"],
-        "themes": ["themes"]
+        "extensions": [
+            "extensions/deep-review/index.ts",
+            "extensions/pi-notify/index.ts",
+            "extensions/plan-mode/index.ts"
+        ],
+        "skills": [
+            "skills/brave-search/SKILL.md",
+            "skills/code-review/SKILL.md",
+            "skills/code-simplifier/SKILL.md",
+            "skills/context-packer/SKILL.md",
+            "skills/image-compress/SKILL.md",
+            "skills/markdown-converter/SKILL.md",
+            "skills/multi-review/SKILL.md",
+            "skills/pr-context-packer/SKILL.md",
+            "skills/session-analyzer/SKILL.md",
+            "skills/video-compress/SKILL.md",
+            "skills/youtube-transcript/SKILL.md"
+        ],
+        "themes": [
+            "themes/rose-pine-dawn.json",
+            "themes/rose-pine.json"
+        ]
     },
     "peerDependencies": {
         "@mariozechner/pi-ai": "*",
