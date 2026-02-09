@@ -43,4 +43,5 @@ just check
 Runs:
 
 - Root markdown formatting (`dprint fmt --staged --allow-no-files`)
+- Skills check (`just --justfile skills/justfile check`)
 - Full extensions check (`just --justfile extensions/justfile check`)
