@@ -28,6 +28,7 @@ extension-name/
 ```
 
 Current extensions:
+- `deep-review`
 - `pi-notify`
 - `plan-mode`
 
