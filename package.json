@@ -5,6 +5,7 @@
     "keywords": ["pi-package"],
     "pi": {
         "extensions": ["extensions/**/index.ts"],
-        "skills": ["skills"]
+        "skills": ["skills"],
+        "themes": ["themes"]
     }
 }

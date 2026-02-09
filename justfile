@@ -20,9 +20,15 @@ setup-hooks:
 update:
     @just update-skills
     @just update-extensions
+    @just update-themes
 
 update-skills skills-branch="master":
     git subtree pull --prefix=skills pi-skills {{skills-branch}}
 
 update-extensions extensions-branch="main":
     git subtree pull --prefix=extensions pi-extensions {{extensions-branch}}
+
+update-themes:
+    mkdir -p themes
+    curl -fsSL https://raw.githubusercontent.com/zenobi-us/pi-rose-pine/main/themes/rose-pine-main.json -o themes/rose-pine.json
+    curl -fsSL https://raw.githubusercontent.com/zenobi-us/pi-rose-pine/main/themes/rose-pine-dawn.json -o themes/rose-pine-dawn.json
