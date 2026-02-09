@@ -1,10 +1,13 @@
 default:
     @just --list
 
-check: md-fmt skills-check extensions-check
+check: fmt skills-check extensions-check
+
+fmt:
+    dprint fmt
 
 md-fmt:
-    dprint fmt --staged --allow-no-files
+    dprint fmt
 
 skills-check:
     just --justfile skills/justfile check
