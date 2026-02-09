@@ -5,6 +5,7 @@ Combined Pi package repo. This repo is the monorepo source of truth for skills/e
 ## Mirror repos
 
 - `extensions/` is mirrored to `~/dev/pi-extensions` (git subtree)
+- `extensions/pi-notify/` is also mirrored to `~/dev/pi-notify` (nested subtree fan-out)
 - `skills/` is mirrored to `~/dev/pi-skills` (git subtree)
 - `themes/` is synced from `zenobi-us/pi-rose-pine`
 
@@ -16,11 +17,14 @@ Use a **one-directional monorepo-first flow**:
 - Publish downstream mirrors with:
   - `just publish-skills`
   - `just publish-extensions`
-  - `just publish` (both)
+  - `just publish-pi-notify`
+  - `just publish` (all mirrors)
 
-`just update-skills` / `just update-extensions` are **repair-only** for one-off direct downstream edits.
+`just update-skills` / `just update-extensions` / `just update-pi-notify` are **repair-only** for one-off direct downstream edits.
 
-If you make a one-off downstream edit directly in `~/dev/pi-skills` or `~/dev/pi-extensions`:
+`just update-extensions` also runs `update-pi-notify` so nested `pi-notify` changes are pulled too.
+
+If you make a one-off downstream edit directly in `~/dev/pi-skills`, `~/dev/pi-extensions`, or `~/dev/pi-notify`:
 
 1. Commit/push downstream.
 2. Run the matching `just update-*` in this repo.
@@ -42,6 +46,6 @@ just check
 
 Runs:
 
-- Root markdown formatting (`dprint fmt --staged --allow-no-files`)
+- Root markdown formatting (`dprint fmt`)
 - Skills check (`just --justfile skills/justfile check`)
 - Full extensions check (`just --justfile extensions/justfile check`)

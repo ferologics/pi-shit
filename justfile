@@ -33,12 +33,16 @@ regen-manifest:
 publish:
     @just publish-skills
     @just publish-extensions
+    @just publish-pi-notify
 
 publish-skills skills-branch="master":
     git subtree push --prefix=skills pi-skills {{skills-branch}}
 
 publish-extensions extensions-branch="main":
     git subtree push --prefix=extensions pi-extensions {{extensions-branch}}
+
+publish-pi-notify pi-notify-branch="master":
+    git subtree push --prefix=extensions/pi-notify git@github.com:ferologics/pi-notify.git {{pi-notify-branch}}
 
 # Repair flow: pull one-off direct downstream edits back into pi-shit.
 update:
@@ -50,8 +54,12 @@ update:
 update-skills skills-branch="master":
     git subtree pull --prefix=skills pi-skills {{skills-branch}}
 
-update-extensions extensions-branch="main":
+update-extensions extensions-branch="main" pi-notify-branch="master":
     git subtree pull --prefix=extensions pi-extensions {{extensions-branch}}
+    just update-pi-notify pi-notify-branch={{pi-notify-branch}}
+
+update-pi-notify pi-notify-branch="master":
+    git subtree pull --prefix=extensions/pi-notify git@github.com:ferologics/pi-notify.git {{pi-notify-branch}}
 
 update-themes:
     mkdir -p themes

@@ -29,11 +29,18 @@ Primary flow (monorepo-first): edit in this repo, then publish mirrors.
 just publish
 ```
 
+`just publish` fans out to:
+
+- `skills/` → `pi-skills`
+- `extensions/` → `pi-extensions`
+- `extensions/pi-notify/` → `pi-notify`
+
 Or publish individually:
 
 ```bash
 just publish-skills
 just publish-extensions
+just publish-pi-notify
 ```
 
 Repair flow for one-off direct edits in downstream mirrors:
@@ -41,6 +48,7 @@ Repair flow for one-off direct edits in downstream mirrors:
 ```bash
 just update-skills
 just update-extensions
+just update-pi-notify
 ```
 
 Theme sync still pulls from `zenobi-us/pi-rose-pine`:
@@ -50,3 +58,5 @@ just update-themes
 ```
 
 `just update` runs all pulls (`update-skills`, `update-extensions`, `update-themes`) and regenerates the package manifest.
+
+`update-extensions` includes `update-pi-notify`, so nested `pi-notify` updates are included automatically.
