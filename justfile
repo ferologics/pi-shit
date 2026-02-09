@@ -20,14 +20,26 @@ setup-hooks:
     chmod +x .git/hooks/pre-commit
     echo "✓ Pre-commit hook installed"
 
+regen-manifest:
+    node scripts/regen-pi-manifest.mjs
+
+# Primary flow: edit in pi-shit, then publish mirrors.
+publish:
+    @just publish-skills
+    @just publish-extensions
+
+publish-skills skills-branch="master":
+    git subtree push --prefix=skills pi-skills {{skills-branch}}
+
+publish-extensions extensions-branch="main":
+    git subtree push --prefix=extensions pi-extensions {{extensions-branch}}
+
+# Repair flow: pull one-off direct downstream edits back into pi-shit.
 update:
     @just update-skills
     @just update-extensions
     @just update-themes
     @just regen-manifest
-
-regen-manifest:
-    node scripts/regen-pi-manifest.mjs
 
 update-skills skills-branch="master":
     git subtree pull --prefix=skills pi-skills {{skills-branch}}

@@ -1,27 +1,30 @@
 # AGENTS.md - pi-shit context
 
-Combined Pi package repo. This repo is an integration layer over downstream sources.
+Combined Pi package repo. This repo is the monorepo source of truth for skills/extensions, and mirrors them to downstream repos.
 
-## Source repos
+## Mirror repos
 
-- `extensions/` is synced from `~/dev/pi-extensions` (git subtree)
-- `skills/` is synced from `~/dev/pi-skills` (git subtree)
+- `extensions/` is mirrored to `~/dev/pi-extensions` (git subtree)
+- `skills/` is mirrored to `~/dev/pi-skills` (git subtree)
 - `themes/` is synced from `zenobi-us/pi-rose-pine`
 
 ## Subtree sync policy (important)
 
-Treat this repo as an integration layer with a **one-directional sync**:
+Use a **one-directional monorepo-first flow**:
 
-- Source of truth for skills is `~/dev/pi-skills`.
-- Source of truth for extensions is `~/dev/pi-extensions`.
-- Pull downstream updates into this repo via `just update-skills` / `just update-extensions` (or `just update`).
-- Avoid making direct long-term changes inside `skills/` or `extensions/` here.
+- Do day-to-day edits in this repo (`skills/` and `extensions/`).
+- Publish downstream mirrors with:
+  - `just publish-skills`
+  - `just publish-extensions`
+  - `just publish` (both)
 
-If a change is made in `pi-shit/skills` or `pi-shit/extensions` by mistake:
+`just update-skills` / `just update-extensions` are **repair-only** for one-off direct downstream edits.
 
-1. Port that change to the upstream source repo first and commit/push there.
-2. Run the corresponding `just update-*` in `pi-shit` to re-sync.
-3. Only use `git subtree push` as a repair tool, not normal workflow.
+If you make a one-off downstream edit directly in `~/dev/pi-skills` or `~/dev/pi-extensions`:
+
+1. Commit/push downstream.
+2. Run the matching `just update-*` in this repo.
+3. Continue normal work from `pi-shit`.
 
 ## Backlog routing (important)
 
@@ -29,7 +32,7 @@ If a change is made in `pi-shit/skills` or `pi-shit/extensions` by mistake:
 - Extension-specific backlog lives in `extensions/<extension>/TODO.md`.
 - Skill-specific backlog lives in `skills/<skill>/TODO.md`.
 - `extensions/TODO.md` is an index/shared file, not a single-extension backlog dump.
-- When working directly in downstream source repos, keep the same TODO files aligned there.
+- Keep backlog files aligned with downstream mirrors via subtree publish/sync.
 
 ## Checks
 

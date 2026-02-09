@@ -3,10 +3,10 @@
 ## Backlog routing (source of truth)
 
 - This file is for **pi-shit package-level integration** work only.
-- Extension-specific backlog belongs in `extensions/<extension>/TODO.md`.
-  - Upstream source of truth while developing extensions: `~/dev/pi-extensions/<extension>/TODO.md`
-- Skill-specific backlog belongs in `skills/<skill>/TODO.md`.
-  - Upstream source of truth while developing skills: `~/dev/pi-skills/<skill>/TODO.md`
+- Extension-specific backlog belongs in `extensions/<extension>/TODO.md` (source of truth in this repo).
+  - Mirror path when published: `~/dev/pi-extensions/<extension>/TODO.md`
+- Skill-specific backlog belongs in `skills/<skill>/TODO.md` (source of truth in this repo).
+  - Mirror path when published: `~/dev/pi-skills/<skill>/TODO.md`
 - `extensions/TODO.md` is an index/shared-extensions file, not a dumping ground for one extension.
 
 ## Downstream backlog index
