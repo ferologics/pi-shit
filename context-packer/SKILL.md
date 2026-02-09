@@ -6,6 +6,7 @@ description: Build LLM-ready code dumps with optional docs, then count tokens wi
 # Context Packer
 
 Use this skill when the user wants to:
+
 - copy a project into an LLM-friendly single text file,
 - include/exclude docs, tests, lockfiles, etc.,
 - verify token count against a model context window.
@@ -13,9 +14,10 @@ Use this skill when the user wants to:
 ## What it does
 
 `prepare-context.sh`:
+
 1. Selects relevant project files (tracked files by default)
 2. Excludes common junk (generated files, prior dumps, lockfiles/env/sensitive files unless requested)
-3. Builds a fenced text dump (`path + ``` + contents`) for all selected files
+3. Builds a fenced text dump (``path + ``` + contents``) for all selected files
 4. Writes dump to `<project>/prompt/<output>.txt` (or `/tmp/context-packer/...` with `--tmp-output`)
 5. Writes a manifest of included files next to the dump
 6. Counts tokens with `tokencount --encoding o200k-base`

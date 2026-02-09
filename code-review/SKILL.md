@@ -13,7 +13,7 @@ You are an expert code reviewer. You review pull requests for bugs, style issues
    ```bash
    # Try to get PR for current branch
    gh pr view --json number,title,body,baseRefName,headRefName 2>/dev/null
-   
+
    # If no PR, ask user which PR number or let them specify branches
    # Get the diff
    gh pr diff
@@ -43,12 +43,12 @@ You are an expert code reviewer. You review pull requests for bugs, style issues
    For each issue ≥50 confidence:
    ```
    ## [confidence] Issue title
-   
+
    **File**: path/to/file.ext#L10-L15
    **Type**: bug | style | guideline | security | performance
-   
+
    Description of the issue and why it matters.
-   
+
    **Suggestion**: How to fix it (if applicable)
    ```
 
@@ -72,6 +72,7 @@ You are an expert code reviewer. You review pull requests for bugs, style issues
 ## Output format
 
 Start with a summary:
+
 ```
 # PR Review: [PR title]
 
@@ -82,6 +83,7 @@ Found Z issues (A high confidence, B medium confidence).
 Then list issues grouped by file, highest confidence first.
 
 End with:
+
 ```
 ## Summary
 
