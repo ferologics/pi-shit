@@ -11,13 +11,14 @@ Combined Pi package for personal extensions + skills.
 ## Install in Pi
 
 ```bash
-pi install /Users/zen/dev/pi-shit
+pi install npm:pi-shit
 ```
 
-Or from git once remote exists:
+Or from git/local:
 
 ```bash
 pi install git:github.com/ferologics/pi-shit
+pi install /path/to/pi-shit
 ```
 
 ## Sync

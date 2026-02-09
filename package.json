@@ -1,11 +1,35 @@
 {
     "name": "pi-shit",
-    "private": true,
     "version": "0.1.0",
-    "keywords": ["pi-package"],
+    "description": "Personal Pi package bundling extensions, skills, and Rose Pine themes",
+    "keywords": ["pi-package", "pi-extension", "pi-skill", "pi-theme"],
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ferologics/pi-shit.git"
+    },
+    "files": [
+        "README.md",
+        "extensions/deep-review",
+        "extensions/plan-mode",
+        "extensions/pi-notify/index.ts",
+        "extensions/pi-notify/LICENSE",
+        "extensions/pi-notify/package.json",
+        "extensions/pi-notify/README.md",
+        "skills",
+        "themes"
+    ],
     "pi": {
         "extensions": ["extensions/**/index.ts"],
         "skills": ["skills"],
         "themes": ["themes"]
+    },
+    "peerDependencies": {
+        "@mariozechner/pi-ai": "*",
+        "@mariozechner/pi-coding-agent": "*",
+        "@mariozechner/pi-tui": "*"
+    },
+    "publishConfig": {
+        "access": "public"
     }
 }
