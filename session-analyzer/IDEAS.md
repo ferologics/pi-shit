@@ -6,8 +6,8 @@
 
 Example:
 
-- `/Users/zen/myrepo` → `--Users-zen-myrepo--`
-- `/Users/zen/myrepo-feature` → `--Users-zen-myrepo-feature--`
+- `/path/to/myrepo` → `--path-to-myrepo--`
+- `/path/to/myrepo-feature` → `--path-to-myrepo-feature--`
 
 Patterns that span worktrees are missed entirely.
 
