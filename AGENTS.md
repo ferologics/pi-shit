@@ -27,6 +27,10 @@ extension-name/
 └── README.md     # Usage docs
 ```
 
+Current extensions:
+- `pi-notify`
+- `plan-mode`
+
 ## Type Checking
 
 Extensions import from pi's packages. The `tsconfig.json` maps these:
