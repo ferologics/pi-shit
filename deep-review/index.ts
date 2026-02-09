@@ -2,6 +2,7 @@ import { spawn, type ChildProcess } from "node:child_process";
 import { access, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { calculateCost, getModel, type Model, type Usage } from "@mariozechner/pi-ai";
 import { getMarkdownTheme, type ExtensionAPI, type ExtensionCommandContext } from "@mariozechner/pi-coding-agent";
 import { Markdown } from "@mariozechner/pi-tui";
@@ -118,6 +119,10 @@ A query is required, either as positional text or via \`--query\`.
 ## Stop command
 
 - \`/deep-review-stop\` stops an in-flight run.
+
+## Requirement
+
+- Bundled skill file must exist at \`skills/pr-context-packer/SKILL.md\` (via pi-shit package layout).
 `;
 
 const ANSI_REGEX = new RegExp(String.raw`\u001b\[[0-?]*[ -/]*[@-~]|\u001b\][^\u0007]*(?:\u0007|\u001b\\)`, "g");
@@ -520,22 +525,6 @@ export function parseOptions(rawArgs: string, cwd: string): ParseResult {
     return { ok: true, options };
 }
 
-function expandTildePath(value: string): string {
-    if (!value.startsWith("~")) {
-        return value;
-    }
-
-    if (value === "~") {
-        return os.homedir();
-    }
-
-    if (value.startsWith("~/")) {
-        return path.join(os.homedir(), value.slice(2));
-    }
-
-    return value;
-}
-
 async function pathExists(value: string): Promise<boolean> {
     try {
         await access(value);
@@ -545,37 +534,17 @@ async function pathExists(value: string): Promise<boolean> {
     }
 }
 
-async function resolveContextPackerSkillPath(projectDir: string): Promise<string> {
-    const envOverride = process.env.DEEP_REVIEW_CONTEXT_PACKER_SKILL?.trim();
-    const candidates = [
-        envOverride ? expandTildePath(envOverride) : undefined,
-        path.join(projectDir, ".pi", "skills", "pr-context-packer", "SKILL.md"),
-        path.join(projectDir, "pr-context-packer", "SKILL.md"),
-        path.join(os.homedir(), "dev", "pi-skills", "pr-context-packer", "SKILL.md"),
-        path.join(os.homedir(), ".pi", "skills", "pr-context-packer", "SKILL.md"),
-        path.join(
-            os.homedir(),
-            ".pi",
-            "agent",
-            "git",
-            "github.com",
-            "ferologics",
-            "pi-skills",
-            "pr-context-packer",
-            "SKILL.md",
-        ),
-    ].filter((candidate): candidate is string => !!candidate);
+async function resolveBundledContextPackerSkillPath(): Promise<string> {
+    const extensionDir = path.dirname(fileURLToPath(import.meta.url));
+    const bundledPath = path.resolve(extensionDir, "..", "..", "skills", "pr-context-packer", "SKILL.md");
 
-    for (const candidate of candidates) {
-        if (await pathExists(candidate)) {
-            return candidate;
-        }
+    if (!(await pathExists(bundledPath))) {
+        throw new Error(
+            `Bundled skill not found at ${bundledPath}. Install/run deep-review from the pi-shit package layout (extensions + skills).`,
+        );
     }
 
-    const expected = candidates.map((candidate) => `- ${candidate}`).join("\n");
-    throw new Error(
-        `pr-context-packer skill not found. Checked:\n${expected}\nSet DEEP_REVIEW_CONTEXT_PACKER_SKILL=/absolute/path/to/SKILL.md to override.`,
-    );
+    return bundledPath;
 }
 
 function buildContextPackSkillPrompt(options: DeepReviewOptions): string {
@@ -1340,7 +1309,7 @@ export default function deepReviewExtension(pi: ExtensionAPI): void {
 
             let skillPath: string;
             try {
-                skillPath = await resolveContextPackerSkillPath(options.projectDir);
+                skillPath = await resolveBundledContextPackerSkillPath();
             } catch (error) {
                 const message = error instanceof Error ? error.message : String(error);
                 pi.sendMessage({ customType: "deep-review-error", content: message, display: true });

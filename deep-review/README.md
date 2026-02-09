@@ -41,10 +41,10 @@ Run a 2-phase deep PR review flow inside your current Pi session:
 
 ## Notes
 
-- The context-pack subprocess is launched with an explicit skill scope:
-  - `--no-skills --skill <resolved-pr-context-packer-skill>`
-  - Resolution order: `DEEP_REVIEW_CONTEXT_PACKER_SKILL`, project-local candidates, then common home-dir candidates
-  - `~` is expanded in `DEEP_REVIEW_CONTEXT_PACKER_SKILL`
+- The context-pack subprocess is launched with explicit skill scope:
+  - `--no-skills --skill <bundled skills/pr-context-packer/SKILL.md>`
+- `deep-review` fails fast if that bundled skill file is missing.
+- Intended package layout is `pi-shit` (`extensions/` + `skills/` in one package).
 - Scribe expansion stays enabled in context-packer (no disable flag in this extension).
 - Use `--no-summary` if you want parity mode without readable reasoning summary text.
 - The command updates Pi UI live with a compact status widget (phase + stream progress).
