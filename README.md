@@ -25,7 +25,6 @@ This repo is assembled with git subtrees:
 
 - `skills/` ← `pi-skills`
 - `extensions/` ← `pi-extensions`
-- `extensions/pi-notify` ← `pi-notify`
 
 Update all sources with:
 
@@ -38,5 +37,4 @@ Or update individually:
 ```bash
 just update-skills
 just update-extensions
-just update-notify
 ```
