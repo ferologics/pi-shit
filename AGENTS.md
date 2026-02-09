@@ -22,4 +22,7 @@ Combined Pi package repo. This repo is an integration layer over downstream sour
 just check
 ```
 
-Runs markdown formatting (`dprint fmt --staged --allow-no-files`).
+Runs:
+
+- Root markdown formatting (`dprint fmt --staged --allow-no-files`)
+- Full extensions check (`just --justfile extensions/justfile check`)

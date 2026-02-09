@@ -1,10 +1,13 @@
 default:
     @just --list
 
-check: md-fmt
+check: md-fmt extensions-check
 
 md-fmt:
     dprint fmt --staged --allow-no-files
+
+extensions-check:
+    just --justfile extensions/justfile check
 
 remove-hooks:
     rm -f .git/hooks/pre-commit
