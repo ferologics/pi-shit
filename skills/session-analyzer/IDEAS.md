@@ -5,6 +5,7 @@
 **Problem:** Sessions are stored by absolute path, so git worktrees are treated as separate projects even though they share the same repo.
 
 Example:
+
 - `/Users/zen/myrepo` → `--Users-zen-myrepo--`
 - `/Users/zen/myrepo-feature` → `--Users-zen-myrepo-feature--`
 

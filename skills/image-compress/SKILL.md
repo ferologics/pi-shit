@@ -14,6 +14,7 @@ Compress images to a target file size using macOS built-in `sips`. Works with PN
 ```
 
 **Options:**
+
 - `--target MB` - Target size in MB (default: 5)
 - `--width WIDTH` - Scale to width (maintains aspect ratio)
 - `--format FORMAT` - Convert to format: jpeg, png, heic, tiff (default: keep original)

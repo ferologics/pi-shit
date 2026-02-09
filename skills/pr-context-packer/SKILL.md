@@ -6,6 +6,7 @@ description: Build PR-focused context packs (PR description + git diff + full ch
 # PR Context Packer
 
 Use this skill when the user wants high-signal PR context for an LLM:
+
 - include GitHub PR title/body by default,
 - include the actual diff,
 - include full current code for changed files,
@@ -15,6 +16,7 @@ Use this skill when the user wants high-signal PR context for an LLM:
 ## What it does
 
 `prepare-pr-context.sh`:
+
 1. Resolves PR base (`--base` or auto-detect)
 2. Pulls GitHub PR title/body by default (via `gh`, with graceful fallback)
 3. Captures changed files + full git diff (`base...HEAD`)

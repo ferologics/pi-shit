@@ -34,10 +34,10 @@ Runs the `code-review` skill with 3 different models in parallel, then synthesiz
    ```bash
    # What the PR claims to do
    gh pr view [PR_NUMBER] --json title,body
-   
+
    # What it actually does
    cat /tmp/pr-diff.txt
-   
+
    # What others have already said
    gh pr view [PR_NUMBER] --json comments,reviews --jq '.comments[].body, .reviews[].body'
    ```
@@ -56,7 +56,7 @@ Runs the `code-review` skill with 3 different models in parallel, then synthesiz
 6. **Score by IMPACT, not consensus**
    Rate each validated issue by actual severity:
    - 🔴 **Critical**: Breaks functionality, security issue, data loss
-   - 🟠 **High**: Real bugs, incorrect behavior, major guideline violations  
+   - 🟠 **High**: Real bugs, incorrect behavior, major guideline violations
    - 🟡 **Medium**: Performance, maintainability, edge cases
    - 🟢 **Low**: Style, minor improvements, nitpicks
 
@@ -87,18 +87,23 @@ Runs the `code-review` skill with 3 different models in parallel, then synthesiz
 ## Validated Issues
 
 ### 🔴 Critical
+
 [Issues that must be fixed - functionality broken, security, etc.]
 
-### 🟠 High Priority  
+### 🟠 High Priority
+
 [Real bugs, incorrect behavior - should fix before merge]
 
 ### 🟡 Medium Priority
+
 [Performance, maintainability, edge cases - should discuss]
 
 ### 🟢 Low Priority
+
 [Style, minor improvements - nice to have]
 
 Each issue should include:
+
 - **File**: path/to/file.ext#L10-L15
 - **Status**: ✅ Confirmed | ⚠️ Needs verification | ❌ False positive
 - **Found by**: Opus / Codex / Gemini / PR feedback
@@ -106,20 +111,24 @@ Each issue should include:
 - **Suggestion**: How to fix (if applicable)
 
 ## ❌ False Positives Filtered
+
 [List any findings that were wrong, with brief explanation]
 
 ## ⚠️ Potential Gaps
+
 [Things all models may have missed - especially check PR description claims]
 
 ## 📊 Model Coverage
-| Issue | Opus | Codex | Gemini | PR | Status |
-|-------|:----:|:-----:|:------:|:--:|--------|
-| Issue 1 | ✅ | ✅ | ❌ | - | ✅ Confirmed |
-| Issue 2 | ❌ | ✅ | ❌ | - | ✅ Confirmed |
-| Issue 3 | ✅ | ❌ | ✅ | - | ❌ False positive |
-| Issue 4 | ❌ | ❌ | ❌ | ✅ | ⚠️ Models missed! |
+
+| Issue   | Opus | Codex | Gemini | PR  | Status            |
+| ------- | :--: | :---: | :----: | :-: | ----------------- |
+| Issue 1 |  ✅  |  ✅   |   ❌   |  -  | ✅ Confirmed      |
+| Issue 2 |  ❌  |  ✅   |   ❌   |  -  | ✅ Confirmed      |
+| Issue 3 |  ✅  |  ❌   |   ✅   |  -  | ❌ False positive |
+| Issue 4 |  ❌  |  ❌   |   ❌   | ✅  | ⚠️ Models missed!  |
 
 ## Final Verdict
+
 **[MERGE / FIX FIRST / NEEDS DISCUSSION]**
 
 [Brief explanation of verdict]

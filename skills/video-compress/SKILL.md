@@ -14,6 +14,7 @@ Compress videos to a target file size using ffmpeg two-pass encoding.
 ```
 
 **Options:**
+
 - `--target MB` - Target size in MB (default: 10)
 - `--scale WIDTH` - Scale to width, 0 to disable (default: 1920)
 - `--no-audio` - Remove audio track (good for screen recordings)

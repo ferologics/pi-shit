@@ -42,6 +42,7 @@ Extracts and analyzes your pi session transcripts to find recurring patterns tha
 ## Output
 
 Without `--analyze`:
+
 ```
 session-transcripts/
 ├── session-transcripts-000.txt
@@ -50,6 +51,7 @@ session-transcripts/
 ```
 
 With `--analyze`:
+
 ```
 session-transcripts/
 ├── session-transcripts-000.txt
@@ -62,6 +64,7 @@ session-transcripts/
 ## Setup
 
 Install dependencies (run once):
+
 ```bash
 cd {baseDir}
 npm install
