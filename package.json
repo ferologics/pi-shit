@@ -23,6 +23,7 @@
         "extensions": [
             "extensions/deep-review/index.ts",
             "extensions/pi-notify/index.ts",
+            "extensions/pi-system-theme/index.ts",
             "extensions/plan-mode/index.ts"
         ],
         "skills": [

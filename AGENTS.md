@@ -6,6 +6,7 @@ Combined Pi package repo. This repo is the monorepo source of truth for skills/e
 
 - `extensions/` is mirrored to `~/dev/pi-extensions` (git subtree)
 - `extensions/pi-notify/` is also mirrored to `~/dev/pi-notify` (nested subtree fan-out)
+- `extensions/pi-system-theme/` is also mirrored to `~/dev/pi-system-theme` (nested subtree fan-out)
 - `skills/` is mirrored to `~/dev/pi-skills` (git subtree)
 - `themes/` is synced from `zenobi-us/pi-rose-pine`
 
@@ -18,13 +19,14 @@ Use a **one-directional monorepo-first flow**:
   - `just publish-skills`
   - `just publish-extensions`
   - `just publish-pi-notify`
+  - `just publish-pi-system-theme`
   - `just publish` (all mirrors)
 
-`just update-skills` / `just update-extensions` / `just update-pi-notify` are **repair-only** for one-off direct downstream edits.
+`just update-skills` / `just update-extensions` / `just update-pi-notify` / `just update-pi-system-theme` are **repair-only** for one-off direct downstream edits.
 
-`just update-extensions` also runs `update-pi-notify` so nested `pi-notify` changes are pulled too.
+`just update-extensions` also runs `update-pi-notify` and `update-pi-system-theme` so nested mirror changes are pulled too.
 
-If you make a one-off downstream edit directly in `~/dev/pi-skills`, `~/dev/pi-extensions`, or `~/dev/pi-notify`:
+If you make a one-off downstream edit directly in `~/dev/pi-skills`, `~/dev/pi-extensions`, `~/dev/pi-notify`, or `~/dev/pi-system-theme`:
 
 1. Commit/push downstream.
 2. Run the matching `just update-*` in this repo.

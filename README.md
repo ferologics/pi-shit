@@ -4,7 +4,7 @@ Combined Pi package for personal extensions + skills.
 
 ## Structure
 
-- `extensions/` → Pi extensions (for example `deep-review`, `plan-mode`)
+- `extensions/` → Pi extensions (for example `deep-review`, `pi-system-theme`, `plan-mode`)
 - `skills/` → Pi skills (including `pr-context-packer`)
 - `themes/` → Pi themes (`rose-pine`, `rose-pine-dawn`)
 
@@ -34,6 +34,7 @@ just publish
 - `skills/` → `pi-skills`
 - `extensions/` → `pi-extensions`
 - `extensions/pi-notify/` → `pi-notify`
+- `extensions/pi-system-theme/` → `pi-system-theme`
 
 Or publish individually:
 
@@ -41,6 +42,7 @@ Or publish individually:
 just publish-skills
 just publish-extensions
 just publish-pi-notify
+just publish-pi-system-theme
 ```
 
 Repair flow for one-off direct edits in downstream mirrors:
@@ -49,6 +51,7 @@ Repair flow for one-off direct edits in downstream mirrors:
 just update-skills
 just update-extensions
 just update-pi-notify
+just update-pi-system-theme
 ```
 
 Theme sync still pulls from `zenobi-us/pi-rose-pine`:
@@ -59,4 +62,4 @@ just update-themes
 
 `just update` runs all pulls (`update-skills`, `update-extensions`, `update-themes`) and regenerates the package manifest.
 
-`update-extensions` includes `update-pi-notify`, so nested `pi-notify` updates are included automatically.
+`update-extensions` includes `update-pi-notify` and `update-pi-system-theme`, so nested mirror updates are included automatically.

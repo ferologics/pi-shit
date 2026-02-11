@@ -12,8 +12,9 @@
 ## Downstream backlog index
 
 - Extensions index: `extensions/TODO.md`
-- Plan mode backlog: `extensions/plan-mode/TODO.md`
 - Deep review backlog: `extensions/deep-review/TODO.md`
+- Pi system theme backlog: `extensions/pi-system-theme/TODO.md`
+- Plan mode backlog: `extensions/plan-mode/TODO.md`
 - PR context packer backlog: `skills/pr-context-packer/TODO.md`
 
 ## Package-level integration backlog
