@@ -50,11 +50,11 @@ just publish-pi-system-theme
 Repair-only flow (use only for emergency downstream hotfixes; normal work should stay in `pi-shit`):
 
 ```bash
-just update-skills
-just update-extensions
-just update-pi-deep-review
-just update-pi-notify
-just update-pi-system-theme
+just pull-skills
+just pull-extensions
+just pull-pi-deep-review
+just pull-pi-notify
+just pull-pi-system-theme
 ```
 
 Theme sync still pulls from `zenobi-us/pi-rose-pine`:
@@ -63,6 +63,8 @@ Theme sync still pulls from `zenobi-us/pi-rose-pine`:
 just update-themes
 ```
 
-`just update` runs all pulls (`update-skills`, `update-extensions`, `update-themes`) and regenerates the package manifest.
+`just repair-pull` runs all mirror pulls (`pull-skills`, `pull-extensions`, `update-themes`) and regenerates the package manifest.
 
-`update-extensions` includes `update-pi-deep-review`, `update-pi-notify`, and `update-pi-system-theme`, so nested mirror updates are included automatically.
+`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-notify`, and `pull-pi-system-theme`, so nested mirror pulls are included automatically.
+
+Backward-compatible aliases still exist (`update`, `update-*`), but `repair-pull` / `pull-*` are the preferred explicit names.

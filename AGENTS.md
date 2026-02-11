@@ -26,15 +26,17 @@ Use a **one-directional monorepo-first flow**:
 
 Do **not** do normal development directly in downstream mirrors.
 
-`just update-skills` / `just update-extensions` / `just update-pi-deep-review` / `just update-pi-notify` / `just update-pi-system-theme` are **repair-only** for emergency one-off downstream edits.
+`just pull-skills` / `just pull-extensions` / `just pull-pi-deep-review` / `just pull-pi-notify` / `just pull-pi-system-theme` are **repair-only** for emergency one-off downstream edits.
 
-`just update-extensions` also runs `update-pi-deep-review`, `update-pi-notify`, and `update-pi-system-theme` so nested mirror changes are pulled too.
+`just pull-extensions` also runs `pull-pi-deep-review`, `pull-pi-notify`, and `pull-pi-system-theme` so nested mirror changes are pulled too.
 
 If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi-extensions`, `~/dev/pi-deep-review`, `~/dev/pi-notify`, or `~/dev/pi-system-theme`:
 
 1. Commit/push downstream.
-2. Run the matching `just update-*` in this repo to pull it back.
+2. Run the matching `just pull-*` in this repo to pull it back.
 3. Resume normal work from `pi-shit` only.
+
+Backward-compatible aliases still exist (`update`, `update-*`), but `repair-pull` / `pull-*` are the preferred explicit names.
 
 ## Backlog routing (important)
 
