@@ -29,6 +29,14 @@ setup-hooks:
 regen-manifest:
     node scripts/regen-pi-manifest.mjs
 
+# Release automation (version bumps + publish + npm + GitHub releases).
+release target bump="patch":
+    just check
+    node scripts/release.mjs --target {{target}} --bump {{bump}}
+
+release-dry target bump="patch":
+    node scripts/release.mjs --target {{target}} --bump {{bump}} --dry-run
+
 # Primary flow: edit in pi-shit, then publish mirrors.
 publish:
     @just publish-skills

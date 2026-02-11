@@ -36,6 +36,21 @@ If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi
 2. Run the matching `just pull-*` in this repo to pull it back.
 3. Resume normal work from `pi-shit` only.
 
+## Release workflow (important)
+
+Use `just release` to orchestrate version bumps, mirror publish, npm publish, and GitHub releases.
+
+- Dry-run first: `just release-dry deep-review minor`
+- Then execute: `just release deep-review minor`
+
+Target propagation rules:
+
+- `deep-review`: `pi-deep-review` -> `pi-extensions` -> `pi-shit`
+- `pi-notify`: `pi-notify` -> `pi-extensions` -> `pi-shit`
+- `pi-system-theme`: `pi-system-theme` -> `pi-extensions` -> `pi-shit`
+- `extensions`: `pi-extensions` -> `pi-shit`
+- `pi-shit`: root only
+
 ## Backlog routing (important)
 
 - Root `TODO.md` is for **pi-shit package-level integration** tasks only.

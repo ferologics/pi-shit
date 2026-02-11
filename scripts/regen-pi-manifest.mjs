@@ -3,6 +3,7 @@ import path from "node:path";
 
 const root = process.cwd();
 const packageJsonPath = path.join(root, "package.json");
+const extensionsPackageJsonPath = path.join(root, "extensions", "package.json");
 
 function toPosix(value) {
     return value.split(path.sep).join("/");
@@ -56,6 +57,16 @@ packageJson.pi.skills = skills;
 packageJson.pi.themes = themes.length > 0 ? themes : ["themes"];
 
 fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 4)}\n`, "utf8");
+
+if (fs.existsSync(extensionsPackageJsonPath)) {
+    const extensionsPackageJson = JSON.parse(fs.readFileSync(extensionsPackageJsonPath, "utf8"));
+    const extensionEntries = extensions.map((entry) => entry.replace(/^extensions\//, ""));
+
+    extensionsPackageJson.pi = extensionsPackageJson.pi || {};
+    extensionsPackageJson.pi.extensions = extensionEntries;
+
+    fs.writeFileSync(extensionsPackageJsonPath, `${JSON.stringify(extensionsPackageJson, null, 4)}\n`, "utf8");
+}
 
 console.log(
     `✓ Regenerated pi manifest (${extensions.length} extensions, ${skills.length} skills, ${themes.length} themes)`,

@@ -66,3 +66,29 @@ just update-themes
 `just repair-pull` runs all mirror pulls (`pull-skills`, `pull-extensions`, `update-themes`) and regenerates the package manifest.
 
 `pull-extensions` includes `pull-pi-deep-review`, `pull-pi-notify`, and `pull-pi-system-theme`, so nested mirror pulls are included automatically.
+
+## Release workflow
+
+Use release automation for version bump propagation + mirror publish + npm publish + GitHub releases.
+
+Dry-run first:
+
+```bash
+just release-dry deep-review minor
+```
+
+Then execute:
+
+```bash
+just release deep-review minor
+```
+
+Supported targets:
+
+- `deep-review` (bumps `pi-deep-review` → `pi-extensions` → `pi-shit`)
+- `pi-notify` (bumps `pi-notify` → `pi-extensions` → `pi-shit`)
+- `pi-system-theme` (bumps `pi-system-theme` → `pi-extensions` → `pi-shit`)
+- `extensions` (bumps `pi-extensions` → `pi-shit`)
+- `pi-shit` (bumps only root package)
+
+Supported bump levels: `patch`, `minor`, `major`.

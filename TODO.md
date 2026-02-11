@@ -20,7 +20,8 @@
 
 ## Package-level integration backlog
 
-- [ ] Add release orchestration for monorepo + mirrors (version bump, tags, GitHub releases) with dry-run support.
+- [x] Add release orchestration for monorepo + mirrors (version bump, tags, GitHub releases) with dry-run support.
+- [ ] Extend release automation with optional changelog/release-note customization per package.
 
 ## Decide strategy for upstream Pi example extensions
 
