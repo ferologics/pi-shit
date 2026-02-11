@@ -1,6 +1,6 @@
 ---
 name: pr-context-packer
-description: Build PR-focused context packs (PR description + git diff + full changed files + related files via Scribe), then token-check with o200k-base against a budget.
+description: Build PR-focused context packs (PR description + git diff + full changed files + related files via Scribe), then budget-fit and token-check with o200k-base.
 ---
 
 # PR Context Packer
@@ -11,7 +11,8 @@ Use this skill when the user wants high-signal PR context for an LLM:
 - include the actual diff,
 - include full current code for changed files,
 - optionally expand with related files discovered via Scribe,
-- verify fit against a context window budget.
+- fit related files into the remaining token budget,
+- verify final fit against a context window budget.
 
 ## What it does
 
@@ -22,8 +23,9 @@ Use this skill when the user wants high-signal PR context for an LLM:
 3. Captures changed files + full git diff (`base...HEAD`)
 4. Includes full current content of changed files (safe filters applied)
 5. Optionally expands related files using Scribe covering-set (dependents included by default)
-6. Writes a single final text file plus manifests (changed/related/omitted)
-7. Counts tokens with `tokencount --encoding o200k-base`
+6. Ranks related candidates and greedily fits them into remaining token budget
+7. Writes a single final text file plus manifests (changed/related/omitted + related-omitted + selection + scribe-target audit)
+8. Counts tokens with `tokencount --encoding o200k-base` and trims low-priority related files if needed
 
 ## Command
 
@@ -58,10 +60,21 @@ $HOME/dev/pi-skills/pr-context-packer/prepare-pr-context.sh ~/dev/mobile-1 --bas
 - `--no-dependents` disable dependent-file expansion (dependents are included by default)
 - `--scribe-max-depth <n>` and `--scribe-max-files <n>` control each covering-set query
 - `--scribe-target-limit <n>` cap number of changed files used as Scribe targets (default: `0` = all)
-- `--max-related <n>` cap final related files list
+- `--max-related <n>` cap ranked related candidate pool before budget fitting (`0` disables related section)
 - `--budget <tokens>` token budget (default: `272000`)
 - `--fail-over-budget` return non-zero when over budget
 - `--include-lockfiles`, `--include-env`, `--include-secrets` for explicit opt-ins
+
+## Output manifests
+
+For `<output>.txt`, the script writes:
+
+- `<output>.changed.files.txt`
+- `<output>.related.files.txt`
+- `<output>.omitted.files.txt` (changed files omitted by safety filters)
+- `<output>.related.omitted.files.txt` (related candidates omitted with reasons)
+- `<output>.related.selection.tsv` (per-related candidate decision + token estimate)
+- `<output>.scribe.targets.tsv` (per-target Scribe status + possible max-files cap signals)
 
 ## Requirements
 
