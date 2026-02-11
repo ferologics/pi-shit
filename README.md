@@ -33,6 +33,7 @@ just publish
 
 - `skills/` → `pi-skills`
 - `extensions/` → `pi-extensions`
+- `extensions/deep-review/` → `pi-deep-review`
 - `extensions/pi-notify/` → `pi-notify`
 - `extensions/pi-system-theme/` → `pi-system-theme`
 
@@ -41,15 +42,17 @@ Or publish individually:
 ```bash
 just publish-skills
 just publish-extensions
+just publish-pi-deep-review
 just publish-pi-notify
 just publish-pi-system-theme
 ```
 
-Repair flow for one-off direct edits in downstream mirrors:
+Repair-only flow (use only for emergency downstream hotfixes; normal work should stay in `pi-shit`):
 
 ```bash
 just update-skills
 just update-extensions
+just update-pi-deep-review
 just update-pi-notify
 just update-pi-system-theme
 ```
@@ -62,4 +65,4 @@ just update-themes
 
 `just update` runs all pulls (`update-skills`, `update-extensions`, `update-themes`) and regenerates the package manifest.
 
-`update-extensions` includes `update-pi-notify` and `update-pi-system-theme`, so nested mirror updates are included automatically.
+`update-extensions` includes `update-pi-deep-review`, `update-pi-notify`, and `update-pi-system-theme`, so nested mirror updates are included automatically.

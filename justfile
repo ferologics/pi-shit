@@ -33,6 +33,7 @@ regen-manifest:
 publish:
     @just publish-skills
     @just publish-extensions
+    @just publish-pi-deep-review
     @just publish-pi-notify
     @just publish-pi-system-theme
 
@@ -41,6 +42,9 @@ publish-skills skills-branch="master":
 
 publish-extensions extensions-branch="main":
     git subtree push --prefix=extensions pi-extensions {{extensions-branch}}
+
+publish-pi-deep-review pi-deep-review-branch="main":
+    git subtree push --prefix=extensions/deep-review git@github.com:ferologics/pi-deep-review.git {{pi-deep-review-branch}}
 
 publish-pi-notify pi-notify-branch="master":
     git subtree push --prefix=extensions/pi-notify git@github.com:ferologics/pi-notify.git {{pi-notify-branch}}
@@ -58,10 +62,14 @@ update:
 update-skills skills-branch="master":
     git subtree pull --prefix=skills pi-skills {{skills-branch}}
 
-update-extensions extensions-branch="main" pi-notify-branch="master" pi-system-theme-branch="main":
+update-extensions extensions-branch="main" pi-deep-review-branch="main" pi-notify-branch="master" pi-system-theme-branch="main":
     git subtree pull --prefix=extensions pi-extensions {{extensions-branch}}
+    just update-pi-deep-review pi-deep-review-branch={{pi-deep-review-branch}}
     just update-pi-notify pi-notify-branch={{pi-notify-branch}}
     just update-pi-system-theme pi-system-theme-branch={{pi-system-theme-branch}}
+
+update-pi-deep-review pi-deep-review-branch="main":
+    git subtree pull --prefix=extensions/deep-review git@github.com:ferologics/pi-deep-review.git {{pi-deep-review-branch}}
 
 update-pi-notify pi-notify-branch="master":
     git subtree pull --prefix=extensions/pi-notify git@github.com:ferologics/pi-notify.git {{pi-notify-branch}}

@@ -5,6 +5,7 @@ Combined Pi package repo. This repo is the monorepo source of truth for skills/e
 ## Mirror repos
 
 - `extensions/` is mirrored to `~/dev/pi-extensions` (git subtree)
+- `extensions/deep-review/` is also mirrored to `~/dev/pi-deep-review` (nested subtree fan-out)
 - `extensions/pi-notify/` is also mirrored to `~/dev/pi-notify` (nested subtree fan-out)
 - `extensions/pi-system-theme/` is also mirrored to `~/dev/pi-system-theme` (nested subtree fan-out)
 - `skills/` is mirrored to `~/dev/pi-skills` (git subtree)
@@ -18,19 +19,22 @@ Use a **one-directional monorepo-first flow**:
 - Publish downstream mirrors with:
   - `just publish-skills`
   - `just publish-extensions`
+  - `just publish-pi-deep-review`
   - `just publish-pi-notify`
   - `just publish-pi-system-theme`
   - `just publish` (all mirrors)
 
-`just update-skills` / `just update-extensions` / `just update-pi-notify` / `just update-pi-system-theme` are **repair-only** for one-off direct downstream edits.
+Do **not** do normal development directly in downstream mirrors.
 
-`just update-extensions` also runs `update-pi-notify` and `update-pi-system-theme` so nested mirror changes are pulled too.
+`just update-skills` / `just update-extensions` / `just update-pi-deep-review` / `just update-pi-notify` / `just update-pi-system-theme` are **repair-only** for emergency one-off downstream edits.
 
-If you make a one-off downstream edit directly in `~/dev/pi-skills`, `~/dev/pi-extensions`, `~/dev/pi-notify`, or `~/dev/pi-system-theme`:
+`just update-extensions` also runs `update-pi-deep-review`, `update-pi-notify`, and `update-pi-system-theme` so nested mirror changes are pulled too.
+
+If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi-extensions`, `~/dev/pi-deep-review`, `~/dev/pi-notify`, or `~/dev/pi-system-theme`:
 
 1. Commit/push downstream.
-2. Run the matching `just update-*` in this repo.
-3. Continue normal work from `pi-shit`.
+2. Run the matching `just update-*` in this repo to pull it back.
+3. Resume normal work from `pi-shit` only.
 
 ## Backlog routing (important)
 

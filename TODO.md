@@ -5,6 +5,7 @@
 - This file is for **pi-shit package-level integration** work only.
 - Extension-specific backlog belongs in `extensions/<extension>/TODO.md` (source of truth in this repo).
   - Mirror path when published: `~/dev/pi-extensions/<extension>/TODO.md`
+  - Some extensions also fan out to standalone mirrors (for example `~/dev/pi-deep-review/TODO.md`).
 - Skill-specific backlog belongs in `skills/<skill>/TODO.md` (source of truth in this repo).
   - Mirror path when published: `~/dev/pi-skills/<skill>/TODO.md`
 - `extensions/TODO.md` is an index/shared-extensions file, not a dumping ground for one extension.
@@ -18,6 +19,8 @@
 - PR context packer backlog: `skills/pr-context-packer/TODO.md`
 
 ## Package-level integration backlog
+
+- [ ] Add release orchestration for monorepo + mirrors (version bump, tags, GitHub releases) with dry-run support.
 
 ## Decide strategy for upstream Pi example extensions
 
