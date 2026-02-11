@@ -45,10 +45,10 @@ Use `just release` to orchestrate version bumps, mirror publish, npm publish, an
 
 Target propagation rules:
 
-- `deep-review`: `pi-deep-review` -> `pi-extensions` -> `pi-shit`
-- `pi-notify`: `pi-notify` -> `pi-extensions` -> `pi-shit`
-- `pi-system-theme`: `pi-system-theme` -> `pi-extensions` -> `pi-shit`
-- `extensions`: `pi-extensions` -> `pi-shit`
+- `deep-review`: `pi-deep-review` -> `@ferologics/pi-extensions` -> `pi-shit`
+- `pi-notify`: `pi-notify` -> `@ferologics/pi-extensions` -> `pi-shit`
+- `pi-system-theme`: `pi-system-theme` -> `@ferologics/pi-extensions` -> `pi-shit`
+- `extensions`: `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-shit`: root only
 
 ## Backlog routing (important)

@@ -12,7 +12,7 @@ const PACKAGE_DEFINITIONS = {
         subtreePublishRecipe: null,
         npmPublishCwd: ".",
     },
-    "pi-extensions": {
+    "@ferologics/pi-extensions": {
         manifestPath: "extensions/package.json",
         repo: "ferologics/pi-extensions",
         branch: "main",
@@ -44,14 +44,15 @@ const PACKAGE_DEFINITIONS = {
 
 const TARGET_PLANS = {
     "pi-shit": ["pi-shit"],
-    "pi-extensions": ["pi-extensions", "pi-shit"],
-    extensions: ["pi-extensions", "pi-shit"],
-    "pi-deep-review": ["pi-deep-review", "pi-extensions", "pi-shit"],
-    "deep-review": ["pi-deep-review", "pi-extensions", "pi-shit"],
-    "pi-notify": ["pi-notify", "pi-extensions", "pi-shit"],
-    notify: ["pi-notify", "pi-extensions", "pi-shit"],
-    "pi-system-theme": ["pi-system-theme", "pi-extensions", "pi-shit"],
-    "system-theme": ["pi-system-theme", "pi-extensions", "pi-shit"],
+    "@ferologics/pi-extensions": ["@ferologics/pi-extensions", "pi-shit"],
+    "pi-extensions": ["@ferologics/pi-extensions", "pi-shit"],
+    extensions: ["@ferologics/pi-extensions", "pi-shit"],
+    "pi-deep-review": ["pi-deep-review", "@ferologics/pi-extensions", "pi-shit"],
+    "deep-review": ["pi-deep-review", "@ferologics/pi-extensions", "pi-shit"],
+    "pi-notify": ["pi-notify", "@ferologics/pi-extensions", "pi-shit"],
+    notify: ["pi-notify", "@ferologics/pi-extensions", "pi-shit"],
+    "pi-system-theme": ["pi-system-theme", "@ferologics/pi-extensions", "pi-shit"],
+    "system-theme": ["pi-system-theme", "@ferologics/pi-extensions", "pi-shit"],
 };
 
 const ALLOWED_BUMPS = new Set(["patch", "minor", "major"]);

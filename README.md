@@ -85,10 +85,10 @@ just release deep-review minor
 
 Supported targets:
 
-- `deep-review` (bumps `pi-deep-review` → `pi-extensions` → `pi-shit`)
-- `pi-notify` (bumps `pi-notify` → `pi-extensions` → `pi-shit`)
-- `pi-system-theme` (bumps `pi-system-theme` → `pi-extensions` → `pi-shit`)
-- `extensions` (bumps `pi-extensions` → `pi-shit`)
+- `deep-review` (bumps `pi-deep-review` → `@ferologics/pi-extensions` → `pi-shit`)
+- `pi-notify` (bumps `pi-notify` → `@ferologics/pi-extensions` → `pi-shit`)
+- `pi-system-theme` (bumps `pi-system-theme` → `@ferologics/pi-extensions` → `pi-shit`)
+- `extensions` (bumps `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-shit` (bumps only root package)
 
 Supported bump levels: `patch`, `minor`, `major`.
