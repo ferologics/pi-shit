@@ -3,66 +3,24 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 
 const ROOT = process.cwd();
-
-const PACKAGE_DEFINITIONS = {
-    "pi-shit": {
-        manifestPath: "package.json",
-        repo: "ferologics/pi-shit",
-        branch: "main",
-        subtreePublishRecipe: null,
-        npmPublishCwd: ".",
-    },
-    "@ferologics/pi-extensions": {
-        manifestPath: "extensions/package.json",
-        repo: "ferologics/pi-extensions",
-        branch: "main",
-        subtreePublishRecipe: "publish-extensions",
-        npmPublishCwd: "extensions",
-    },
-    "pi-deep-review": {
-        manifestPath: "extensions/deep-review/package.json",
-        repo: "ferologics/pi-deep-review",
-        branch: "main",
-        subtreePublishRecipe: "publish-pi-deep-review",
-        npmPublishCwd: "extensions/deep-review",
-    },
-    "pi-notify": {
-        manifestPath: "extensions/pi-notify/package.json",
-        repo: "ferologics/pi-notify",
-        branch: "master",
-        subtreePublishRecipe: "publish-pi-notify",
-        npmPublishCwd: "extensions/pi-notify",
-    },
-    "pi-system-theme": {
-        manifestPath: "extensions/pi-system-theme/package.json",
-        repo: "ferologics/pi-system-theme",
-        branch: "main",
-        subtreePublishRecipe: "publish-pi-system-theme",
-        npmPublishCwd: "extensions/pi-system-theme",
-    },
-};
-
-const TARGET_PLANS = {
-    "pi-shit": ["pi-shit"],
-    "@ferologics/pi-extensions": ["@ferologics/pi-extensions", "pi-shit"],
-    "pi-extensions": ["@ferologics/pi-extensions", "pi-shit"],
-    extensions: ["@ferologics/pi-extensions", "pi-shit"],
-    "pi-deep-review": ["pi-deep-review", "@ferologics/pi-extensions", "pi-shit"],
-    "deep-review": ["pi-deep-review", "@ferologics/pi-extensions", "pi-shit"],
-    "pi-notify": ["pi-notify", "@ferologics/pi-extensions", "pi-shit"],
-    notify: ["pi-notify", "@ferologics/pi-extensions", "pi-shit"],
-    "pi-system-theme": ["pi-system-theme", "@ferologics/pi-extensions", "pi-shit"],
-    "system-theme": ["pi-system-theme", "@ferologics/pi-extensions", "pi-shit"],
-};
-
 const ALLOWED_BUMPS = new Set(["patch", "minor", "major"]);
+const ROOT_RELEASE_MANIFESTS = ["package.json", "extensions/package.json"];
+const EXTENSIONS_DIR = "extensions";
+
+function normalizePath(value) {
+    return value.split(path.sep).join("/");
+}
 
 function quoteArg(value) {
-    if (/^[A-Za-z0-9_./:-]+$/.test(value)) {
+    if (/^[A-Za-z0-9_./:@-]+$/.test(value)) {
         return value;
     }
 
     return JSON.stringify(value);
+}
+
+function unique(values) {
+    return [...new Set(values)];
 }
 
 function run(command, args, options = {}) {
@@ -108,6 +66,7 @@ function parseArgs(argv) {
         target: undefined,
         bump: "patch",
         dryRun: false,
+        validate: false,
     };
 
     for (let index = 0; index < argv.length; index += 1) {
@@ -130,26 +89,167 @@ function parseArgs(argv) {
             continue;
         }
 
+        if (token === "--validate") {
+            options.validate = true;
+            continue;
+        }
+
         throw new Error(`Unknown argument: ${token}`);
-    }
-
-    if (!options.target) {
-        throw new Error("Missing required argument: --target");
-    }
-
-    if (options.target.startsWith("target=")) {
-        options.target = options.target.slice("target=".length);
-    }
-
-    if (options.bump.startsWith("bump=")) {
-        options.bump = options.bump.slice("bump=".length);
     }
 
     if (!ALLOWED_BUMPS.has(options.bump)) {
         throw new Error(`Invalid --bump value: ${options.bump}. Use patch|minor|major.`);
     }
 
+    if (options.validate && options.target) {
+        throw new Error("--validate cannot be combined with --target");
+    }
+
+    if (!options.validate && !options.target) {
+        throw new Error("Missing required argument: --target");
+    }
+
     return options;
+}
+
+function assertManifestExists(manifestPath) {
+    const absolutePath = path.join(ROOT, manifestPath);
+    if (!fs.existsSync(absolutePath)) {
+        throw new Error(`Missing release manifest: ${manifestPath}`);
+    }
+}
+
+function collectReleaseManifestPaths() {
+    const manifests = [];
+
+    for (const manifestPath of ROOT_RELEASE_MANIFESTS) {
+        const normalized = normalizePath(manifestPath);
+        assertManifestExists(normalized);
+        manifests.push(normalized);
+    }
+
+    const extensionsPath = path.join(ROOT, EXTENSIONS_DIR);
+    const entries = fs.readdirSync(extensionsPath, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
+
+    for (const entry of entries) {
+        if (!entry.isDirectory()) {
+            continue;
+        }
+
+        const manifestPath = normalizePath(path.join(EXTENSIONS_DIR, entry.name, "package.json"));
+        if (fs.existsSync(path.join(ROOT, manifestPath))) {
+            manifests.push(manifestPath);
+        }
+    }
+
+    return unique(manifests);
+}
+
+function readManifest(relativePath) {
+    const absolutePath = path.join(ROOT, relativePath);
+    const text = fs.readFileSync(absolutePath, "utf8");
+    return JSON.parse(text);
+}
+
+function writeManifest(relativePath, value) {
+    const absolutePath = path.join(ROOT, relativePath);
+    const text = `${JSON.stringify(value, null, 4)}\n`;
+    fs.writeFileSync(absolutePath, text, "utf8");
+}
+
+function parseRepoSlug(value) {
+    if (typeof value !== "string") {
+        return null;
+    }
+
+    const normalized = value.trim();
+    if (/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(normalized)) {
+        return normalized;
+    }
+
+    return null;
+}
+
+function readPiReleaseConfig(manifestPath, manifest) {
+    const releaseConfig = manifest.piRelease;
+
+    if (!releaseConfig || typeof releaseConfig !== "object" || Array.isArray(releaseConfig)) {
+        throw new Error(`${manifestPath} must define piRelease object`);
+    }
+
+    if (typeof releaseConfig.branch !== "string" || releaseConfig.branch.trim().length === 0) {
+        throw new Error(`${manifestPath} piRelease.branch must be a non-empty string`);
+    }
+
+    const repo = parseRepoSlug(releaseConfig.repo);
+    if (!repo) {
+        throw new Error(`${manifestPath} piRelease.repo must be a valid GitHub slug (owner/repo)`);
+    }
+
+    let subtreePublishRecipe = null;
+    if (releaseConfig.subtreePublishRecipe !== undefined) {
+        if (typeof releaseConfig.subtreePublishRecipe !== "string") {
+            throw new Error(`${manifestPath} piRelease.subtreePublishRecipe must be a string`);
+        }
+
+        const normalizedRecipe = releaseConfig.subtreePublishRecipe.trim();
+        if (normalizedRecipe.length > 0) {
+            subtreePublishRecipe = normalizedRecipe;
+        }
+    }
+
+    return {
+        repo,
+        branch: releaseConfig.branch.trim(),
+        subtreePublishRecipe,
+    };
+}
+
+function buildReleaseRegistry(manifestPaths) {
+    const definitionsById = new Map();
+    const packageIdByDir = new Map();
+
+    for (const manifestPath of manifestPaths) {
+        const manifest = readManifest(manifestPath);
+
+        if (typeof manifest.name !== "string" || manifest.name.trim().length === 0) {
+            throw new Error(`${manifestPath} must define a non-empty name`);
+        }
+
+        if (typeof manifest.version !== "string") {
+            throw new Error(`${manifestPath} must define a string version`);
+        }
+
+        const releaseConfig = readPiReleaseConfig(manifestPath, manifest);
+        const packageId = manifest.name;
+        const packageDir = normalizePath(path.dirname(manifestPath));
+
+        if (definitionsById.has(packageId)) {
+            throw new Error(`Duplicate release package name: ${packageId}`);
+        }
+
+        if (packageIdByDir.has(packageDir)) {
+            throw new Error(`Directory ${packageDir} has multiple release packages`);
+        }
+
+        definitionsById.set(packageId, {
+            packageId,
+            manifestPath,
+            packageDir,
+            npmPublishCwd: packageDir === "." ? "." : packageDir,
+            repo: releaseConfig.repo,
+            branch: releaseConfig.branch,
+            subtreePublishRecipe: releaseConfig.subtreePublishRecipe,
+        });
+
+        packageIdByDir.set(packageDir, packageId);
+    }
+
+    return {
+        manifestPaths,
+        definitionsById,
+        packageIdByDir,
+    };
 }
 
 function parseSemver(version) {
@@ -179,16 +279,75 @@ function bumpSemver(version, bump) {
     return `${current.major}.${current.minor}.${current.patch + 1}`;
 }
 
-function readManifest(relativePath) {
-    const absolutePath = path.join(ROOT, relativePath);
-    const text = fs.readFileSync(absolutePath, "utf8");
-    return JSON.parse(text);
+function parentDirectoryKey(directory) {
+    if (directory === ".") {
+        return null;
+    }
+
+    const parent = normalizePath(path.dirname(directory));
+    return parent === directory ? null : parent;
 }
 
-function writeManifest(relativePath, value) {
-    const absolutePath = path.join(ROOT, relativePath);
-    const text = `${JSON.stringify(value, null, 4)}\n`;
-    fs.writeFileSync(absolutePath, text, "utf8");
+function propagationChainFor(targetPackageId, registry) {
+    const chain = [targetPackageId];
+    let currentDirectory = registry.definitionsById.get(targetPackageId)?.packageDir;
+
+    if (!currentDirectory) {
+        throw new Error(`Unknown release package: ${targetPackageId}`);
+    }
+
+    while (true) {
+        const parentDirectory = parentDirectoryKey(currentDirectory);
+        if (parentDirectory === null) {
+            break;
+        }
+
+        const parentPackageId = registry.packageIdByDir.get(parentDirectory);
+        if (parentPackageId && !chain.includes(parentPackageId)) {
+            chain.push(parentPackageId);
+        }
+
+        currentDirectory = parentDirectory;
+    }
+
+    return chain;
+}
+
+function planForTarget(target, bump, registry) {
+    const targetDefinition = registry.definitionsById.get(target);
+    if (!targetDefinition) {
+        const knownTargets = [...registry.definitionsById.keys()].sort().join(", ");
+        throw new Error(`Unknown target: ${target}. Known targets: ${knownTargets}`);
+    }
+
+    const packageIds = propagationChainFor(target, registry);
+
+    return packageIds.map((packageId) => {
+        const definition = registry.definitionsById.get(packageId);
+        if (!definition) {
+            throw new Error(`Missing release definition for ${packageId}`);
+        }
+
+        const manifest = readManifest(definition.manifestPath);
+
+        if (manifest.name !== packageId) {
+            throw new Error(
+                `${definition.manifestPath} expected name=${packageId} but found ${manifest.name ?? "<missing>"}`,
+            );
+        }
+
+        if (typeof manifest.version !== "string") {
+            throw new Error(`${definition.manifestPath} is missing a string version field`);
+        }
+
+        return {
+            packageId,
+            definition,
+            manifest,
+            from: manifest.version,
+            to: bumpSemver(manifest.version, bump),
+        };
+    });
 }
 
 function ensureCleanWorkingTree(dryRun) {
@@ -230,46 +389,6 @@ function ghReleaseExists(repo, tag, dryRun) {
     return (result.status ?? 1) === 0;
 }
 
-function unique(values) {
-    return [...new Set(values)];
-}
-
-function planForTarget(target, bump) {
-    const packageIds = TARGET_PLANS[target];
-    if (!packageIds) {
-        throw new Error(`Unknown target: ${target}`);
-    }
-
-    return packageIds.map((packageId) => {
-        const definition = PACKAGE_DEFINITIONS[packageId];
-        if (!definition) {
-            throw new Error(`Missing package definition for target package: ${packageId}`);
-        }
-
-        const manifest = readManifest(definition.manifestPath);
-
-        if (manifest.name !== packageId) {
-            throw new Error(
-                `${definition.manifestPath} expected name=${packageId} but found ${manifest.name ?? "<missing>"}`,
-            );
-        }
-
-        if (typeof manifest.version !== "string") {
-            throw new Error(`${definition.manifestPath} is missing a string version field`);
-        }
-
-        const nextVersion = bumpSemver(manifest.version, bump);
-
-        return {
-            packageId,
-            definition,
-            manifest,
-            from: manifest.version,
-            to: nextVersion,
-        };
-    });
-}
-
 function printPlan(target, bump, plan, dryRun) {
     console.log("");
     console.log(`Release target: ${target}`);
@@ -304,7 +423,7 @@ function executeRelease(options, plan) {
         }
     }
 
-    run("git", ["add", ...changedManifestPaths], { dryRun: options.dryRun });
+    run("git", ["add", ...unique(changedManifestPaths)], { dryRun: options.dryRun });
     run("git", ["commit", "-m", commitMessage(options.target, options.bump, plan)], { dryRun: options.dryRun });
     run("git", ["push", "origin", "main"], { dryRun: options.dryRun });
 
@@ -360,10 +479,36 @@ function executeRelease(options, plan) {
     console.log("Release flow complete.");
 }
 
+function printValidationSummary(registry) {
+    console.log("Release config validation OK.\n");
+    console.log("Release manifests:");
+    for (const manifestPath of registry.manifestPaths) {
+        console.log(`- ${manifestPath}`);
+    }
+
+    console.log("\nRelease targets:");
+    const packageIds = [...registry.definitionsById.keys()].sort();
+    for (const packageId of packageIds) {
+        const definition = registry.definitionsById.get(packageId);
+        if (!definition) {
+            continue;
+        }
+
+        console.log(`- ${packageId} (${definition.manifestPath})`);
+    }
+}
+
 function main() {
     const options = parseArgs(process.argv.slice(2));
-    const plan = planForTarget(options.target, options.bump);
+    const manifestPaths = collectReleaseManifestPaths();
+    const registry = buildReleaseRegistry(manifestPaths);
 
+    if (options.validate) {
+        printValidationSummary(registry);
+        return;
+    }
+
+    const plan = planForTarget(options.target, options.bump, registry);
     printPlan(options.target, options.bump, plan, options.dryRun);
     executeRelease(options, plan);
 }

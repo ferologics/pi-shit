@@ -40,16 +40,18 @@ If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi
 
 Use `just release` to orchestrate version bumps, mirror publish, npm publish, and GitHub releases.
 
-- Dry-run first: `just release-dry deep-review minor`
-- Then execute: `just release deep-review minor`
+- Dry-run first: `just release-dry pi-deep-review minor`
+- Then execute: `just release pi-deep-review minor`
 
-Target propagation rules:
+Target propagation rules (canonical package names only):
 
-- `deep-review`: `pi-deep-review` -> `@ferologics/pi-extensions` -> `pi-shit`
+- `pi-deep-review`: `pi-deep-review` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-notify`: `pi-notify` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-system-theme`: `pi-system-theme` -> `@ferologics/pi-extensions` -> `pi-shit`
-- `extensions`: `@ferologics/pi-extensions` -> `pi-shit`
+- `@ferologics/pi-extensions`: `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-shit`: root only
+
+Release target discovery is manifest-driven via `piRelease` in each release manifest (`repo` + `branch`, optional `subtreePublishRecipe`).
 
 ## Backlog routing (important)
 
@@ -70,3 +72,4 @@ Runs:
 - Root markdown formatting (`dprint fmt`)
 - Skills check (`just --justfile skills/justfile check`)
 - Full extensions check (`just --justfile extensions/justfile check`)
+- Release config validation (`node scripts/release.mjs --validate`)

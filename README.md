@@ -74,21 +74,23 @@ Use release automation for version bump propagation + mirror publish + npm publi
 Dry-run first:
 
 ```bash
-just release-dry deep-review minor
+just release-dry pi-deep-review minor
 ```
 
 Then execute:
 
 ```bash
-just release deep-review minor
+just release pi-deep-review minor
 ```
 
-Supported targets:
+Supported targets (canonical package names only):
 
-- `deep-review` (bumps `pi-deep-review` → `@ferologics/pi-extensions` → `pi-shit`)
+- `pi-deep-review` (bumps `pi-deep-review` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-notify` (bumps `pi-notify` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-system-theme` (bumps `pi-system-theme` → `@ferologics/pi-extensions` → `pi-shit`)
-- `extensions` (bumps `@ferologics/pi-extensions` → `pi-shit`)
+- `@ferologics/pi-extensions` (bumps `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-shit` (bumps only root package)
 
 Supported bump levels: `patch`, `minor`, `major`.
+
+Release targets are discovered from `piRelease` metadata in release manifests, and `just check` runs `release-config-check` to fail fast when any release manifest is missing valid `piRelease` (`repo` + `branch`, optional `subtreePublishRecipe`).

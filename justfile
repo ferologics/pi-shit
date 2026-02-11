@@ -1,7 +1,7 @@
 default:
     @just --list
 
-check: fmt skills-check extensions-check
+check: fmt skills-check extensions-check release-config-check
 
 fmt:
     dprint fmt
@@ -28,6 +28,9 @@ setup-hooks:
 
 regen-manifest:
     node scripts/regen-pi-manifest.mjs
+
+release-config-check:
+    node scripts/release.mjs --validate
 
 # Release automation (version bumps + publish + npm + GitHub releases).
 release target bump="patch":
