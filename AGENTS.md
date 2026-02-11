@@ -36,8 +36,6 @@ If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi
 2. Run the matching `just pull-*` in this repo to pull it back.
 3. Resume normal work from `pi-shit` only.
 
-Backward-compatible aliases still exist (`update`, `update-*`), but `repair-pull` / `pull-*` are the preferred explicit names.
-
 ## Backlog routing (important)
 
 - Root `TODO.md` is for **pi-shit package-level integration** tasks only.

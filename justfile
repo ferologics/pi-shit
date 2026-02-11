@@ -77,25 +77,6 @@ pull-pi-notify pi-notify-branch="master":
 pull-pi-system-theme pi-system-theme-branch="main":
     git subtree pull --prefix=extensions/pi-system-theme git@github.com:ferologics/pi-system-theme.git {{pi-system-theme-branch}}
 
-# Backward-compatible aliases (prefer repair-pull / pull-*).
-update:
-    @just repair-pull
-
-update-skills skills-branch="master":
-    @just pull-skills skills-branch={{skills-branch}}
-
-update-extensions extensions-branch="main" pi-deep-review-branch="main" pi-notify-branch="master" pi-system-theme-branch="main":
-    @just pull-extensions extensions-branch={{extensions-branch}} pi-deep-review-branch={{pi-deep-review-branch}} pi-notify-branch={{pi-notify-branch}} pi-system-theme-branch={{pi-system-theme-branch}}
-
-update-pi-deep-review pi-deep-review-branch="main":
-    @just pull-pi-deep-review pi-deep-review-branch={{pi-deep-review-branch}}
-
-update-pi-notify pi-notify-branch="master":
-    @just pull-pi-notify pi-notify-branch={{pi-notify-branch}}
-
-update-pi-system-theme pi-system-theme-branch="main":
-    @just pull-pi-system-theme pi-system-theme-branch={{pi-system-theme-branch}}
-
 update-themes:
     mkdir -p themes
     curl -fsSL https://raw.githubusercontent.com/zenobi-us/pi-rose-pine/main/themes/rose-pine-main.json -o themes/rose-pine.json
