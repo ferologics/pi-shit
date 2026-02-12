@@ -38,7 +38,7 @@ If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi
 
 ## Release workflow (important)
 
-Use `just release` to orchestrate version bumps, mirror publish, npm publish, and GitHub releases.
+Use `just release` to orchestrate version bumps, mirror publish, and GitHub releases (npm publish runs in per-repo trusted publisher workflows).
 
 - Dry-run first: `just release-dry pi-deep-review minor`
 - Then execute: `just release pi-deep-review minor`
@@ -52,6 +52,8 @@ Target propagation rules (canonical package names only):
 - `pi-shit`: root only
 
 Release target discovery is manifest-driven via `piRelease` in each release manifest (`repo` + `branch`, optional `subtreePublishRecipe`).
+
+Trusted publisher prerequisites are external: each package must be configured in npm to trust its matching GitHub repo/workflow (`.github/workflows/npm-publish.yml`).
 
 ## Backlog routing (important)
 

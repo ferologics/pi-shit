@@ -22,7 +22,8 @@
 
 - [x] Add release orchestration for monorepo + mirrors (version bump, tags, GitHub releases) with dry-run support.
 - [ ] Extend release automation with optional changelog/release-note customization per package.
-- [ ] Set up npm Trusted Publishers (OIDC) for release targets so publish can ship to npm from GitHub (not only GitHub tags/releases).
+- [x] Add release-triggered npm publish workflows (`.github/workflows/npm-publish.yml`) for release targets.
+- [ ] Configure npm Trusted Publishers (OIDC) in npm for each package/repo/workflow pair.
 
 ## Decide strategy for upstream Pi example extensions
 

@@ -32,7 +32,7 @@ regen-manifest:
 release-config-check:
     node scripts/release.mjs --validate
 
-# Release automation (version bumps + publish + npm + GitHub releases).
+# Release automation (version bumps + mirror publish + GitHub releases; npm publish via trusted workflows).
 release target bump="patch":
     just check
     node scripts/release.mjs --target {{target}} --bump {{bump}}

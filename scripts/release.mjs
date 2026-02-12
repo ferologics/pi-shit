@@ -236,7 +236,6 @@ function buildReleaseRegistry(manifestPaths) {
             packageId,
             manifestPath,
             packageDir,
-            npmPublishCwd: packageDir === "." ? "." : packageDir,
             repo: releaseConfig.repo,
             branch: releaseConfig.branch,
             subtreePublishRecipe: releaseConfig.subtreePublishRecipe,
@@ -361,20 +360,6 @@ function ensureCleanWorkingTree(dryRun) {
     }
 }
 
-function npmVersionExists(name, version, dryRun) {
-    const result = run("npm", ["view", `${name}@${version}`, "version"], {
-        capture: true,
-        allowFailure: true,
-        dryRun,
-    });
-
-    if (dryRun) {
-        return false;
-    }
-
-    return (result.status ?? 1) === 0;
-}
-
 function ghReleaseExists(repo, tag, dryRun) {
     const result = run("gh", ["release", "view", tag, "--repo", repo], {
         capture: true,
@@ -437,17 +422,7 @@ function executeRelease(options, plan) {
         run("just", [recipe], { dryRun: options.dryRun });
     }
 
-    for (const item of plan) {
-        if (npmVersionExists(item.packageId, item.to, options.dryRun)) {
-            console.log(`- npm publish skipped for ${item.packageId}@${item.to} (already exists)`);
-            continue;
-        }
-
-        run("npm", ["publish"], {
-            cwd: item.definition.npmPublishCwd,
-            dryRun: options.dryRun,
-        });
-    }
+    console.log("- npm publish is handled by per-repo GitHub Actions trusted publisher workflows.");
 
     for (const item of plan) {
         const tag = `v${item.to}`;

@@ -69,7 +69,7 @@ just update-themes
 
 ## Release workflow
 
-Use release automation for version bump propagation + mirror publish + npm publish + GitHub releases.
+Use release automation for version bump propagation + mirror publish + GitHub releases (npm publish is handled by per-repo trusted publisher workflows).
 
 Dry-run first:
 
@@ -93,4 +93,4 @@ Supported targets (canonical package names only):
 
 Supported bump levels: `patch`, `minor`, `major`.
 
-Release targets are discovered from `piRelease` metadata in release manifests, and `just check` runs `release-config-check` to fail fast when any release manifest is missing valid `piRelease` (`repo` + `branch`, optional `subtreePublishRecipe`).
+Release targets are discovered from `piRelease` metadata in release manifests, and `just check` runs `release-config-check` to fail fast when any release manifest is missing valid `piRelease` (`repo` + `branch`, optional `subtreePublishRecipe`). npm Trusted Publishers must be configured in npm for each package/repo pair so release-created GitHub releases can publish without OTP.
