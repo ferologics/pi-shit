@@ -49,6 +49,7 @@ Target propagation rules (canonical package names only):
 - `pi-notify`: `pi-notify` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-system-theme`: `pi-system-theme` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `@ferologics/pi-extensions`: `@ferologics/pi-extensions` -> `pi-shit`
+- `@ferologics/pi-skills`: `@ferologics/pi-skills` -> `pi-shit`
 - `pi-shit`: root only
 
 Release target discovery is manifest-driven via `piRelease` in each release manifest (`repo` + `branch`, optional `subtreePublishRecipe`).

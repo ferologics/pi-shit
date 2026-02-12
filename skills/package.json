@@ -22,5 +22,10 @@
       "video-compress",
       "youtube-transcript"
     ]
+  },
+  "piRelease": {
+    "repo": "ferologics/pi-skills",
+    "branch": "master",
+    "subtreePublishRecipe": "publish-skills"
   }
 }

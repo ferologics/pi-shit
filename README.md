@@ -89,6 +89,7 @@ Supported targets (canonical package names only):
 - `pi-notify` (bumps `pi-notify` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-system-theme` (bumps `pi-system-theme` → `@ferologics/pi-extensions` → `pi-shit`)
 - `@ferologics/pi-extensions` (bumps `@ferologics/pi-extensions` → `pi-shit`)
+- `@ferologics/pi-skills` (bumps `@ferologics/pi-skills` → `pi-shit`)
 - `pi-shit` (bumps only root package)
 
 Supported bump levels: `patch`, `minor`, `major`.

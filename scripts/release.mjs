@@ -4,7 +4,7 @@ import { spawnSync } from "node:child_process";
 
 const ROOT = process.cwd();
 const ALLOWED_BUMPS = new Set(["patch", "minor", "major"]);
-const ROOT_RELEASE_MANIFESTS = ["package.json", "extensions/package.json"];
+const ROOT_RELEASE_MANIFESTS = ["package.json", "extensions/package.json", "skills/package.json"];
 const EXTENSIONS_DIR = "extensions";
 
 function normalizePath(value) {
