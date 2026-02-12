@@ -23,7 +23,8 @@
 - [x] Add release orchestration for monorepo + mirrors (version bump, tags, GitHub releases) with dry-run support.
 - [ ] Extend release automation with optional changelog/release-note customization per package.
 - [x] Add release-triggered npm publish workflows (`.github/workflows/npm-publish.yml`) for release targets.
-- [ ] Configure npm Trusted Publishers (OIDC) in npm for each package/repo/workflow pair (`pi-shit`, `@ferologics/pi-extensions`, `@ferologics/pi-skills`, `pi-deep-review`, `pi-notify`, `pi-system-theme`).
+- [x] Configure npm Trusted Publishers (OIDC) in npm for each package/repo/workflow pair (`pi-shit`, `@ferologics/pi-extensions`, `@ferologics/pi-skills`, `pi-deep-review`, `pi-notify`, `pi-system-theme`).
+- [ ] Decide long-term release orchestration split (local `just release` vs GitHub-first), including auto-tagging/version bump ownership and rollback flow.
 
 ## Decide strategy for upstream Pi example extensions
 
