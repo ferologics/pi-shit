@@ -24,7 +24,8 @@
             "extensions/deep-review/index.ts",
             "extensions/pi-notify/index.ts",
             "extensions/pi-system-theme/index.ts",
-            "extensions/plan-mode/index.ts"
+            "extensions/plan-mode/index.ts",
+            "extensions/pi-verbosity-control/index.ts"
         ],
         "skills": [
             "skills/brave-search/SKILL.md",
