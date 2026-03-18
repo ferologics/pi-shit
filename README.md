@@ -36,6 +36,7 @@ just publish
 - `extensions/deep-review/` → `pi-deep-review`
 - `extensions/pi-notify/` → `pi-notify`
 - `extensions/pi-system-theme/` → `pi-system-theme`
+- `extensions/pi-verbosity-control/` → `pi-verbosity-control`
 
 Or publish individually:
 
@@ -45,6 +46,7 @@ just publish-extensions
 just publish-pi-deep-review
 just publish-pi-notify
 just publish-pi-system-theme
+just publish-pi-verbosity-control
 ```
 
 Repair-only flow (use only for emergency downstream hotfixes; normal work should stay in `pi-shit`):
@@ -55,6 +57,7 @@ just pull-extensions
 just pull-pi-deep-review
 just pull-pi-notify
 just pull-pi-system-theme
+just pull-pi-verbosity-control
 ```
 
 Theme sync still pulls from `zenobi-us/pi-rose-pine`:
@@ -65,7 +68,7 @@ just update-themes
 
 `just repair-pull` runs all mirror pulls (`pull-skills`, `pull-extensions`, `update-themes`) and regenerates the package manifest.
 
-`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-notify`, and `pull-pi-system-theme`, so nested mirror pulls are included automatically.
+`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-notify`, `pull-pi-system-theme`, and `pull-pi-verbosity-control`, so nested mirror pulls are included automatically.
 
 ## Release workflow
 
@@ -83,11 +86,31 @@ Then execute:
 just release pi-deep-review minor
 ```
 
+High-level flow:
+
+```mermaid
+flowchart TB
+    A[Pick target + bump] --> B{Mode}
+    B -->|dry-run| C[Plan version cascade]
+    C --> D[Print commands only]
+
+    B -->|execute| E[Run checks]
+    E --> F[Bump versions in cascade]
+    F --> G[git add + commit + push]
+    G --> H[Run subtree publish recipes]
+    H --> H1[Push leaf mirror repo]
+    H --> H2[Push bundle mirror repo]
+    H1 --> I[Create GH releases if missing]
+    H2 --> I
+    I --> J[npm publish via trusted workflows]
+```
+
 Supported targets (canonical package names only):
 
 - `pi-deep-review` (bumps `pi-deep-review` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-notify` (bumps `pi-notify` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-system-theme` (bumps `pi-system-theme` → `@ferologics/pi-extensions` → `pi-shit`)
+- `pi-verbosity-control` (bumps `pi-verbosity-control` → `@ferologics/pi-extensions` → `pi-shit`)
 - `@ferologics/pi-extensions` (bumps `@ferologics/pi-extensions` → `pi-shit`)
 - `@ferologics/pi-skills` (bumps `@ferologics/pi-skills` → `pi-shit`)
 - `pi-shit` (bumps only root package)

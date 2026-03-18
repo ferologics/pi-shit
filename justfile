@@ -47,6 +47,7 @@ publish:
     @just publish-pi-deep-review
     @just publish-pi-notify
     @just publish-pi-system-theme
+    @just publish-pi-verbosity-control
 
 publish-skills skills-branch="master":
     git subtree push --prefix=skills pi-skills {{skills-branch}}
@@ -63,6 +64,9 @@ publish-pi-notify pi-notify-branch="master":
 publish-pi-system-theme pi-system-theme-branch="main":
     git subtree push --prefix=extensions/pi-system-theme git@github.com:ferologics/pi-system-theme.git {{pi-system-theme-branch}}
 
+publish-pi-verbosity-control pi-verbosity-control-branch="main":
+    git subtree push --prefix=extensions/pi-verbosity-control git@github.com:ferologics/pi-verbosity-control.git {{pi-verbosity-control-branch}}
+
 # Repair flow: pull one-off direct downstream edits back into pi-shit.
 repair-pull:
     @just pull-skills
@@ -73,11 +77,12 @@ repair-pull:
 pull-skills skills-branch="master":
     git subtree pull --prefix=skills pi-skills {{skills-branch}}
 
-pull-extensions extensions-branch="main" pi-deep-review-branch="main" pi-notify-branch="master" pi-system-theme-branch="main":
+pull-extensions extensions-branch="main" pi-deep-review-branch="main" pi-notify-branch="master" pi-system-theme-branch="main" pi-verbosity-control-branch="main":
     git subtree pull --prefix=extensions pi-extensions {{extensions-branch}}
     just pull-pi-deep-review pi-deep-review-branch={{pi-deep-review-branch}}
     just pull-pi-notify pi-notify-branch={{pi-notify-branch}}
     just pull-pi-system-theme pi-system-theme-branch={{pi-system-theme-branch}}
+    just pull-pi-verbosity-control pi-verbosity-control-branch={{pi-verbosity-control-branch}}
 
 pull-pi-deep-review pi-deep-review-branch="main":
     git subtree pull --prefix=extensions/deep-review git@github.com:ferologics/pi-deep-review.git {{pi-deep-review-branch}}
@@ -87,6 +92,9 @@ pull-pi-notify pi-notify-branch="master":
 
 pull-pi-system-theme pi-system-theme-branch="main":
     git subtree pull --prefix=extensions/pi-system-theme git@github.com:ferologics/pi-system-theme.git {{pi-system-theme-branch}}
+
+pull-pi-verbosity-control pi-verbosity-control-branch="main":
+    git subtree pull --prefix=extensions/pi-verbosity-control git@github.com:ferologics/pi-verbosity-control.git {{pi-verbosity-control-branch}}
 
 update-themes:
     mkdir -p themes

@@ -8,6 +8,7 @@ Combined Pi package repo. This repo is the monorepo source of truth for skills/e
 - `extensions/deep-review/` is also mirrored to `~/dev/pi-deep-review` (nested subtree fan-out)
 - `extensions/pi-notify/` is also mirrored to `~/dev/pi-notify` (nested subtree fan-out)
 - `extensions/pi-system-theme/` is also mirrored to `~/dev/pi-system-theme` (nested subtree fan-out)
+- `extensions/pi-verbosity-control/` is also mirrored to `~/dev/pi-verbosity-control` (nested subtree fan-out)
 - `skills/` is mirrored to `~/dev/pi-skills` (git subtree)
 - `themes/` is synced from `zenobi-us/pi-rose-pine`
 
@@ -22,15 +23,16 @@ Use a **one-directional monorepo-first flow**:
   - `just publish-pi-deep-review`
   - `just publish-pi-notify`
   - `just publish-pi-system-theme`
+  - `just publish-pi-verbosity-control`
   - `just publish` (all mirrors)
 
 Do **not** do normal development directly in downstream mirrors.
 
-`just pull-skills` / `just pull-extensions` / `just pull-pi-deep-review` / `just pull-pi-notify` / `just pull-pi-system-theme` are **repair-only** for emergency one-off downstream edits.
+`just pull-skills` / `just pull-extensions` / `just pull-pi-deep-review` / `just pull-pi-notify` / `just pull-pi-system-theme` / `just pull-pi-verbosity-control` are **repair-only** for emergency one-off downstream edits.
 
-`just pull-extensions` also runs `pull-pi-deep-review`, `pull-pi-notify`, and `pull-pi-system-theme` so nested mirror changes are pulled too.
+`just pull-extensions` also runs `pull-pi-deep-review`, `pull-pi-notify`, `pull-pi-system-theme`, and `pull-pi-verbosity-control` so nested mirror changes are pulled too.
 
-If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi-extensions`, `~/dev/pi-deep-review`, `~/dev/pi-notify`, or `~/dev/pi-system-theme`:
+If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi-extensions`, `~/dev/pi-deep-review`, `~/dev/pi-notify`, `~/dev/pi-system-theme`, or `~/dev/pi-verbosity-control`:
 
 1. Commit/push downstream.
 2. Run the matching `just pull-*` in this repo to pull it back.
@@ -40,6 +42,8 @@ If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi
 
 Use `just release` to orchestrate version bumps, mirror publish, and GitHub releases (npm publish runs in per-repo trusted publisher workflows).
 
+For a compact visual flow, see the Mermaid diagram in `README.md` under **Release workflow**.
+
 - Dry-run first: `just release-dry pi-deep-review minor`
 - Then execute: `just release pi-deep-review minor`
 
@@ -48,6 +52,7 @@ Target propagation rules (canonical package names only):
 - `pi-deep-review`: `pi-deep-review` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-notify`: `pi-notify` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-system-theme`: `pi-system-theme` -> `@ferologics/pi-extensions` -> `pi-shit`
+- `pi-verbosity-control`: `pi-verbosity-control` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `@ferologics/pi-extensions`: `@ferologics/pi-extensions` -> `pi-shit`
 - `@ferologics/pi-skills`: `@ferologics/pi-skills` -> `pi-shit`
 - `pi-shit`: root only
