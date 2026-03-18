@@ -61,6 +61,8 @@ Release target discovery is manifest-driven via `piRelease` in each release mani
 
 Trusted publisher prerequisites are external: each package must be configured in npm to trust its matching GitHub repo/workflow (`.github/workflows/npm-publish.yml`).
 
+Brand-new packages need a one-time bootstrap publish: ship the repo + workflow first, publish the initial version manually to npm to create the package record, then configure the trusted publisher for later automated releases.
+
 ## Backlog routing (important)
 
 - Root `TODO.md` is for **pi-shit package-level integration** tasks only.

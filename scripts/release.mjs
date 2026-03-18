@@ -205,6 +205,14 @@ function readPiReleaseConfig(manifestPath, manifest) {
     };
 }
 
+function assertPublishWorkflowExists(manifestPath, packageDir) {
+    const workflowPath = normalizePath(path.join(packageDir, ".github", "workflows", "npm-publish.yml"));
+
+    if (!fs.existsSync(path.join(ROOT, workflowPath))) {
+        throw new Error(`${manifestPath} requires npm publish workflow at ${workflowPath}`);
+    }
+}
+
 function buildReleaseRegistry(manifestPaths) {
     const definitionsById = new Map();
     const packageIdByDir = new Map();
@@ -223,6 +231,8 @@ function buildReleaseRegistry(manifestPaths) {
         const releaseConfig = readPiReleaseConfig(manifestPath, manifest);
         const packageId = manifest.name;
         const packageDir = normalizePath(path.dirname(manifestPath));
+
+        assertPublishWorkflowExists(manifestPath, packageDir);
 
         if (definitionsById.has(packageId)) {
             throw new Error(`Duplicate release package name: ${packageId}`);

@@ -117,4 +117,4 @@ Supported targets (canonical package names only):
 
 Supported bump levels: `patch`, `minor`, `major`.
 
-Release targets are discovered from `piRelease` metadata in release manifests, and `just check` runs `release-config-check` to fail fast when any release manifest is missing valid `piRelease` (`repo` + `branch`, optional `subtreePublishRecipe`). npm Trusted Publishers must be configured in npm for each package/repo pair so release-created GitHub releases can publish without OTP.
+Release targets are discovered from `piRelease` metadata in release manifests, and `just check` runs `release-config-check` to fail fast when any release manifest is missing valid `piRelease` (`repo` + `branch`, optional `subtreePublishRecipe`) or its repo-local npm publish workflow. npm Trusted Publishers must be configured in npm for each package/repo pair so release-created GitHub releases can publish without OTP. Brand-new packages need one manual bootstrap publish first so the package exists on npm before trusted publishing can be configured.
