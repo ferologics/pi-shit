@@ -6,6 +6,8 @@ Combined Pi package repo. This repo is the monorepo source of truth for skills/e
 
 - `extensions/` is mirrored to `~/dev/pi-extensions` (git subtree)
 - `extensions/deep-review/` is also mirrored to `~/dev/pi-deep-review` (nested subtree fan-out)
+- `extensions/pi-ghostty-hunk/` is also mirrored to `~/dev/pi-ghostty-hunk` (nested subtree fan-out)
+- `extensions/pi-ghostty-lazygit/` is also mirrored to `~/dev/pi-ghostty-lazygit` (nested subtree fan-out)
 - `extensions/pi-notify/` is also mirrored to `~/dev/pi-notify` (nested subtree fan-out)
 - `extensions/pi-system-theme/` is also mirrored to `~/dev/pi-system-theme` (nested subtree fan-out)
 - `extensions/pi-verbosity-control/` is also mirrored to `~/dev/pi-verbosity-control` (nested subtree fan-out)
@@ -21,6 +23,8 @@ Use a **one-directional monorepo-first flow**:
   - `just publish-skills`
   - `just publish-extensions`
   - `just publish-pi-deep-review`
+  - `just publish-pi-ghostty-hunk`
+  - `just publish-pi-ghostty-lazygit`
   - `just publish-pi-notify`
   - `just publish-pi-system-theme`
   - `just publish-pi-verbosity-control`
@@ -28,11 +32,11 @@ Use a **one-directional monorepo-first flow**:
 
 Do **not** do normal development directly in downstream mirrors.
 
-`just pull-skills` / `just pull-extensions` / `just pull-pi-deep-review` / `just pull-pi-notify` / `just pull-pi-system-theme` / `just pull-pi-verbosity-control` are **repair-only** for emergency one-off downstream edits.
+`just pull-skills` / `just pull-extensions` / `just pull-pi-deep-review` / `just pull-pi-ghostty-hunk` / `just pull-pi-ghostty-lazygit` / `just pull-pi-notify` / `just pull-pi-system-theme` / `just pull-pi-verbosity-control` are **repair-only** for emergency one-off downstream edits.
 
-`just pull-extensions` also runs `pull-pi-deep-review`, `pull-pi-notify`, `pull-pi-system-theme`, and `pull-pi-verbosity-control` so nested mirror changes are pulled too.
+`just pull-extensions` also runs `pull-pi-deep-review`, `pull-pi-ghostty-hunk`, `pull-pi-ghostty-lazygit`, `pull-pi-notify`, `pull-pi-system-theme`, and `pull-pi-verbosity-control` so nested mirror changes are pulled too.
 
-If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi-extensions`, `~/dev/pi-deep-review`, `~/dev/pi-notify`, `~/dev/pi-system-theme`, or `~/dev/pi-verbosity-control`:
+If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi-extensions`, `~/dev/pi-deep-review`, `~/dev/pi-ghostty-hunk`, `~/dev/pi-ghostty-lazygit`, `~/dev/pi-notify`, `~/dev/pi-system-theme`, or `~/dev/pi-verbosity-control`:
 
 1. Commit/push downstream.
 2. Run the matching `just pull-*` in this repo to pull it back.
@@ -50,6 +54,8 @@ For a compact visual flow, see the Mermaid diagram in `README.md` under **Releas
 Target propagation rules (canonical package names only):
 
 - `pi-deep-review`: `pi-deep-review` -> `@ferologics/pi-extensions` -> `pi-shit`
+- `pi-ghostty-hunk`: `pi-ghostty-hunk` -> `@ferologics/pi-extensions` -> `pi-shit`
+- `pi-ghostty-lazygit`: `pi-ghostty-lazygit` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-notify`: `pi-notify` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-system-theme`: `pi-system-theme` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-verbosity-control`: `pi-verbosity-control` -> `@ferologics/pi-extensions` -> `pi-shit`

@@ -34,6 +34,8 @@ just publish
 - `skills/` → `pi-skills`
 - `extensions/` → `pi-extensions`
 - `extensions/deep-review/` → `pi-deep-review`
+- `extensions/pi-ghostty-hunk/` → `pi-ghostty-hunk`
+- `extensions/pi-ghostty-lazygit/` → `pi-ghostty-lazygit`
 - `extensions/pi-notify/` → `pi-notify`
 - `extensions/pi-system-theme/` → `pi-system-theme`
 - `extensions/pi-verbosity-control/` → `pi-verbosity-control`
@@ -44,6 +46,8 @@ Or publish individually:
 just publish-skills
 just publish-extensions
 just publish-pi-deep-review
+just publish-pi-ghostty-hunk
+just publish-pi-ghostty-lazygit
 just publish-pi-notify
 just publish-pi-system-theme
 just publish-pi-verbosity-control
@@ -55,6 +59,8 @@ Repair-only flow (use only for emergency downstream hotfixes; normal work should
 just pull-skills
 just pull-extensions
 just pull-pi-deep-review
+just pull-pi-ghostty-hunk
+just pull-pi-ghostty-lazygit
 just pull-pi-notify
 just pull-pi-system-theme
 just pull-pi-verbosity-control
@@ -68,7 +74,7 @@ just update-themes
 
 `just repair-pull` runs all mirror pulls (`pull-skills`, `pull-extensions`, `update-themes`) and regenerates the package manifest.
 
-`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-notify`, `pull-pi-system-theme`, and `pull-pi-verbosity-control`, so nested mirror pulls are included automatically.
+`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-ghostty-hunk`, `pull-pi-ghostty-lazygit`, `pull-pi-notify`, `pull-pi-system-theme`, and `pull-pi-verbosity-control`, so nested mirror pulls are included automatically.
 
 ## Release workflow
 
@@ -108,6 +114,8 @@ flowchart TB
 Supported targets (canonical package names only):
 
 - `pi-deep-review` (bumps `pi-deep-review` → `@ferologics/pi-extensions` → `pi-shit`)
+- `pi-ghostty-hunk` (bumps `pi-ghostty-hunk` → `@ferologics/pi-extensions` → `pi-shit`)
+- `pi-ghostty-lazygit` (bumps `pi-ghostty-lazygit` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-notify` (bumps `pi-notify` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-system-theme` (bumps `pi-system-theme` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-verbosity-control` (bumps `pi-verbosity-control` → `@ferologics/pi-extensions` → `pi-shit`)
