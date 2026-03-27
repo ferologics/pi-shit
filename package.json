@@ -1,60 +1,62 @@
 {
-    "name": "pi-shit",
-    "version": "0.7.0",
-    "description": "Personal Pi package bundling extensions, skills, and Rose Pine themes",
-    "keywords": [
-        "pi-package",
-        "pi-extension",
-        "pi-skill",
-        "pi-theme"
-    ],
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/ferologics/pi-shit.git"
-    },
-    "files": [
-        "README.md",
-        "extensions",
-        "skills",
-        "themes"
-    ],
-    "pi": {
-        "extensions": [
-            "extensions/deep-review/index.ts",
-            "extensions/pi-notify/index.ts",
-            "extensions/pi-system-theme/index.ts",
-            "extensions/plan-mode/index.ts",
-            "extensions/pi-verbosity-control/index.ts"
-        ],
-        "skills": [
-            "skills/brave-search/SKILL.md",
-            "skills/code-review/SKILL.md",
-            "skills/code-simplifier/SKILL.md",
-            "skills/context-packer/SKILL.md",
-            "skills/image-compress/SKILL.md",
-            "skills/markdown-converter/SKILL.md",
-            "skills/multi-review/SKILL.md",
-            "skills/pr-context-packer/SKILL.md",
-            "skills/session-analyzer/SKILL.md",
-            "skills/video-compress/SKILL.md",
-            "skills/youtube-transcript/SKILL.md"
-        ],
-        "themes": [
-            "themes/rose-pine-dawn.json",
-            "themes/rose-pine.json"
-        ]
-    },
-    "peerDependencies": {
-        "@mariozechner/pi-ai": "*",
-        "@mariozechner/pi-coding-agent": "*",
-        "@mariozechner/pi-tui": "*"
-    },
-    "publishConfig": {
-        "access": "public"
-    },
-    "piRelease": {
-        "repo": "ferologics/pi-shit",
-        "branch": "main"
-    }
+	"name": "pi-shit",
+	"version": "0.7.0",
+	"description": "Personal Pi package bundling extensions, skills, and Rose Pine themes",
+	"keywords": [
+		"pi-package",
+		"pi-extension",
+		"pi-skill",
+		"pi-theme"
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ferologics/pi-shit.git"
+	},
+	"files": [
+		"README.md",
+		"extensions",
+		"skills",
+		"themes"
+	],
+	"pi": {
+		"extensions": [
+			"extensions/deep-review/index.ts",
+			"extensions/pi-ghostty-hunk/index.ts",
+			"extensions/pi-ghostty-lazygit/index.ts",
+			"extensions/pi-notify/index.ts",
+			"extensions/pi-system-theme/index.ts",
+			"extensions/plan-mode/index.ts",
+			"extensions/pi-verbosity-control/index.ts"
+		],
+		"skills": [
+			"skills/brave-search/SKILL.md",
+			"skills/code-review/SKILL.md",
+			"skills/code-simplifier/SKILL.md",
+			"skills/context-packer/SKILL.md",
+			"skills/image-compress/SKILL.md",
+			"skills/markdown-converter/SKILL.md",
+			"skills/multi-review/SKILL.md",
+			"skills/pr-context-packer/SKILL.md",
+			"skills/session-analyzer/SKILL.md",
+			"skills/video-compress/SKILL.md",
+			"skills/youtube-transcript/SKILL.md"
+		],
+		"themes": [
+			"themes/rose-pine-dawn.json",
+			"themes/rose-pine.json"
+		]
+	},
+	"peerDependencies": {
+		"@mariozechner/pi-ai": "*",
+		"@mariozechner/pi-coding-agent": "*",
+		"@mariozechner/pi-tui": "*"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"piRelease": {
+		"repo": "ferologics/pi-shit",
+		"branch": "main"
+	}
 }

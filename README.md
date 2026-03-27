@@ -4,7 +4,7 @@ Combined Pi package for personal extensions + skills.
 
 ## Structure
 
-- `extensions/` → Pi extensions (for example `deep-review`, `pi-system-theme`, `plan-mode`, `pi-verbosity-control`)
+- `extensions/` → Pi extensions (for example `deep-review`, `pi-ghostty-hunk`, `pi-ghostty-lazygit`, `pi-system-theme`, `plan-mode`, `pi-verbosity-control`)
 - `skills/` → Pi skills (including `pr-context-packer`)
 - `themes/` → Pi themes (`rose-pine`, `rose-pine-dawn`)
 
