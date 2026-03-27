@@ -39,6 +39,7 @@ Current extensions:
 - `pi-notify`
 - `pi-system-theme`
 - `plan-mode`
+- `pro-plan`
 - `pi-verbosity-control`
 
 ## Type Checking
@@ -64,6 +65,7 @@ Extensions import from pi's packages. The `tsconfig.json` maps these:
   - `pi-ghostty-hunk/TODO.md`
   - `pi-system-theme/TODO.md`
   - `plan-mode/TODO.md`
+  - `pro-plan/TODO.md`
   - `pi-verbosity-control/TODO.md`
 - `extensions/TODO.md` is an index/shared file, not a place for one extension's full backlog.
 - Package-level integration backlog belongs in repo-root `../TODO.md`.

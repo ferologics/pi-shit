@@ -17,6 +17,7 @@
 - Pi system theme backlog: `extensions/pi-system-theme/TODO.md`
 - Pi verbosity control backlog: `extensions/pi-verbosity-control/TODO.md`
 - Plan mode backlog: `extensions/plan-mode/TODO.md`
+- Pro plan backlog: `extensions/pro-plan/TODO.md`
 - PR context packer backlog: `skills/pr-context-packer/TODO.md`
 
 ## Package-level integration backlog
