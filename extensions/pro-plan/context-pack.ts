@@ -1,5 +1,5 @@
 import { execFile } from "node:child_process";
-import { access, mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { access, mkdtemp, open, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -69,14 +69,19 @@ async function pathExists(targetPath: string): Promise<boolean> {
 
 async function fileIsLikelyText(filePath: string): Promise<boolean> {
     try {
-        const handle = await readFile(filePath);
-        const length = Math.min(handle.length, 8192);
-        for (let index = 0; index < length; index += 1) {
-            if (handle[index] === 0) {
-                return false;
+        const handle = await open(filePath, "r");
+        try {
+            const buffer = Buffer.alloc(8192);
+            const { bytesRead } = await handle.read(buffer, 0, buffer.length, 0);
+            for (let index = 0; index < bytesRead; index += 1) {
+                if (buffer[index] === 0) {
+                    return false;
+                }
             }
+            return true;
+        } finally {
+            await handle.close();
         }
-        return true;
     } catch {
         return false;
     }
@@ -115,14 +120,15 @@ async function walkFiles(rootDir: string): Promise<string[]> {
 
 async function resolveGlob(projectDir: string, spec: string): Promise<string[]> {
     try {
-        const result = await execFileAsync("rg", ["--files", projectDir, "-g", spec], {
+        const result = await execFileAsync("rg", ["--files", "-g", spec], {
+            cwd: projectDir,
             maxBuffer: EXEC_MAX_BUFFER,
         });
         return result.stdout
             .split(/\r?\n/)
             .map((line) => line.trim())
             .filter((line) => line.length > 0)
-            .map((line) => path.join(projectDir, line));
+            .map((line) => path.resolve(projectDir, line));
     } catch {
         return [];
     }
@@ -235,6 +241,36 @@ function mergeCandidate(
     };
 }
 
+function codeFenceFor(content: string): string {
+    const runs = content.match(/`+/g) ?? [];
+    const longestRun = runs.reduce((max, run) => Math.max(max, run.length), 0);
+    return "`".repeat(Math.max(3, longestRun + 1));
+}
+
+function appendPackedFiles(lines: string[], title: string, files: PackedFile[]): void {
+    lines.push(title);
+    lines.push("");
+
+    if (files.length === 0) {
+        lines.push("None");
+        lines.push("");
+        return;
+    }
+
+    for (const file of files) {
+        const fence = codeFenceFor(file.content);
+        lines.push(`### ${file.path}`);
+        lines.push("");
+        lines.push(fence);
+        lines.push(file.content);
+        if (!file.content.endsWith("\n")) {
+            lines.push("");
+        }
+        lines.push(fence);
+        lines.push("");
+    }
+}
+
 function renderPackMarkdown(seedFiles: PackedFile[], relatedFiles: PackedFile[], omittedFiles: OmittedFile[]): string {
     const lines: string[] = [];
 
@@ -246,43 +282,8 @@ function renderPackMarkdown(seedFiles: PackedFile[], relatedFiles: PackedFile[],
     lines.push(`- Omitted files: ${omittedFiles.length}`);
     lines.push("");
 
-    lines.push(`## Seed files (${seedFiles.length})`);
-    lines.push("");
-    for (const file of seedFiles) {
-        lines.push(`### ${file.path}`);
-        lines.push("");
-        lines.push("```");
-        lines.push(file.content);
-        if (!file.content.endsWith("\n")) {
-            lines.push("");
-        }
-        lines.push("```");
-        lines.push("");
-    }
-
-    if (seedFiles.length === 0) {
-        lines.push("None");
-        lines.push("");
-    }
-
-    lines.push(`## Related files (${relatedFiles.length})`);
-    lines.push("");
-    for (const file of relatedFiles) {
-        lines.push(`### ${file.path}`);
-        lines.push("");
-        lines.push("```");
-        lines.push(file.content);
-        if (!file.content.endsWith("\n")) {
-            lines.push("");
-        }
-        lines.push("```");
-        lines.push("");
-    }
-
-    if (relatedFiles.length === 0) {
-        lines.push("None");
-        lines.push("");
-    }
+    appendPackedFiles(lines, `## Seed files (${seedFiles.length})`, seedFiles);
+    appendPackedFiles(lines, `## Related files (${relatedFiles.length})`, relatedFiles);
 
     lines.push(`## Omitted files (${omittedFiles.length})`);
     lines.push("");
@@ -335,6 +336,12 @@ export async function buildPlanningContextPack(
     }
 
     const seedBudget = seedFiles.reduce((sum, file) => sum + file.tokens, 0);
+    if (seedBudget > options.budget) {
+        throw new Error(
+            `Explicit seed files require ${seedBudget.toLocaleString()} tokens, exceeding the available pack budget of ${options.budget.toLocaleString()} tokens. Narrow the seed paths or raise the budget.`,
+        );
+    }
+
     const warnings = [...resolved.warnings];
     const seedSet = new Set(seedFiles.map((file) => file.path));
     const relatedFiles: PackedFile[] = [];
@@ -426,6 +433,11 @@ export async function buildPlanningContextPack(
     const markdown = renderPackMarkdown(seedFiles, relatedFiles, omittedFiles);
     await writeFile(outputPath, markdown, "utf8");
     const tokenCount = await countTokensForText(markdown);
+    if (tokenCount.tokens > options.budget) {
+        throw new Error(
+            `Rendered context pack requires ${tokenCount.tokens.toLocaleString()} tokens, exceeding the available pack budget of ${options.budget.toLocaleString()} tokens. Narrow the seed paths or raise the budget.`,
+        );
+    }
 
     return {
         packPath: outputPath,

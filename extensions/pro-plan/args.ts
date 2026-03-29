@@ -93,7 +93,8 @@ export function getDefaultBudget(): number {
 export function parseCommand(rawArgs: string, cwd: string, state?: ProPlanState): ParsedCommand | { error: string } {
     const tokens = splitArgs(rawArgs);
     const [subcommandRaw, ...rest] = tokens;
-    const subcommand = (subcommandRaw ?? "status").toLowerCase();
+    const defaultSubcommand = state?.active ? "status" : "help";
+    const subcommand = (subcommandRaw ?? defaultSubcommand).toLowerCase();
 
     if (["help", "--help", "-h"].includes(subcommand)) {
         return { subcommand: "help" };
@@ -111,6 +112,7 @@ export function parseCommand(rawArgs: string, cwd: string, state?: ProPlanState)
     options.mode = subcommand as "pass" | "final";
 
     const positional: string[] = [];
+    let sawExplicitPath = false;
 
     for (let index = 0; index < rest.length; index += 1) {
         const token = rest[index] ?? "";
@@ -120,6 +122,10 @@ export function parseCommand(rawArgs: string, cwd: string, state?: ProPlanState)
             case "--path": {
                 if (!next) {
                     return { error: `${token} requires a value` };
+                }
+                if (!sawExplicitPath) {
+                    options.pathSpecs = [];
+                    sawExplicitPath = true;
                 }
                 options.pathSpecs.push(next);
                 index += 1;
@@ -170,6 +176,9 @@ export function parseCommand(rawArgs: string, cwd: string, state?: ProPlanState)
                 return { subcommand: "help" };
             }
             default: {
+                if (token.startsWith("-")) {
+                    return { error: `Unknown option: ${token}` };
+                }
                 positional.push(token);
                 break;
             }

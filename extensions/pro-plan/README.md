@@ -44,10 +44,10 @@ Artifacts are written under:
 
 Typical files per pass:
 
-- `pass-001.request.md`
-- `pass-001.pack.md` (optional)
-- `pass-001.response.md`
-- `pass-001.oracle.log`
-- `pass-001.meta.json`
+- `pass-001-<timestamp>.request.md`
+- `pass-001-<timestamp>.pack.md` (optional)
+- `pass-001-<timestamp>.response.md`
+- `pass-001-<timestamp>.oracle.log`
+- `pass-001-<timestamp>.meta.json`
 
 Finalized planning can later be applied back to the origin anchor with `/pro-plan apply`.

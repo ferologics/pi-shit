@@ -349,6 +349,11 @@ async function handlePass(
     const transcript = buildPlanningTranscript(entries, state.anchorEntryId);
     const requestMarkdown = buildRequestMarkdown(options.mode, options.prompt, transcript);
     const requestTokens = await countMarkdownTokens(requestMarkdown);
+    if (requestTokens.tokens >= options.budget) {
+        throw new Error(
+            `Planning transcript and pass prompt already consume ${requestTokens.tokens.toLocaleString()} tokens, leaving no room inside the configured budget of ${options.budget.toLocaleString()} tokens. Compact the branch, narrow the planning transcript, or raise the budget.`,
+        );
+    }
 
     const passNumber = state.passCount + 1;
     const shouldUseCode = !options.noCode && options.pathSpecs.length > 0;
@@ -359,7 +364,7 @@ async function handlePass(
     let packWarnings: string[] = [];
 
     if (shouldUseCode && paths.packPath) {
-        const packBudget = Math.max(8192, options.budget - requestTokens.tokens);
+        const packBudget = options.budget - requestTokens.tokens;
         packResult = await buildPlanningContextPack(
             {
                 ...options,

@@ -60,14 +60,17 @@ export async function runOracleBrowser(options: OracleRunOptions): Promise<Oracl
     );
 
     return new Promise<OracleRunResult>((resolve, reject) => {
+        const detached = process.platform !== "win32";
         const child = spawn(resolved.command, args, {
             stdio: ["ignore", "pipe", "pipe"],
             env: process.env,
+            detached,
         });
 
         let stdout = "";
         let stderr = "";
         let settled = false;
+        let killTimeout: ReturnType<typeof setTimeout> | null = null;
 
         const finish = async (result: OracleRunResult) => {
             if (settled) {
@@ -104,6 +107,10 @@ export async function runOracleBrowser(options: OracleRunOptions): Promise<Oracl
         });
 
         child.on("close", (code) => {
+            if (killTimeout) {
+                clearTimeout(killTimeout);
+                killTimeout = null;
+            }
             void finish({
                 stdout,
                 stderr,
@@ -114,7 +121,22 @@ export async function runOracleBrowser(options: OracleRunOptions): Promise<Oracl
         options.signal?.addEventListener(
             "abort",
             () => {
-                child.kill("SIGTERM");
+                const terminate = (signal: NodeJS.Signals): void => {
+                    try {
+                        if (detached && child.pid) {
+                            process.kill(-child.pid, signal);
+                            return;
+                        }
+                        child.kill(signal);
+                    } catch {
+                        // process already exited
+                    }
+                };
+
+                terminate("SIGTERM");
+                killTimeout = setTimeout(() => {
+                    terminate("SIGKILL");
+                }, 2000);
             },
             { once: true },
         );

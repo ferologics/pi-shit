@@ -7,6 +7,10 @@ function pad2(value: number): string {
     return String(value).padStart(2, "0");
 }
 
+function pad3(value: number): string {
+    return String(value).padStart(3, "0");
+}
+
 function timestampForPath(date = new Date()): string {
     return [
         date.getFullYear(),
@@ -16,6 +20,8 @@ function timestampForPath(date = new Date()): string {
         pad2(date.getHours()),
         pad2(date.getMinutes()),
         pad2(date.getSeconds()),
+        "-",
+        pad3(date.getMilliseconds()),
     ].join("");
 }
 
@@ -38,7 +44,7 @@ export function artifactPaths(
     mode: ProPlanMode,
     hasPack: boolean,
 ): ArtifactPaths {
-    const base = `${mode}-${String(passNumber).padStart(3, "0")}`;
+    const base = `${mode}-${String(passNumber).padStart(3, "0")}-${timestampForPath()}`;
 
     return {
         requestPath: path.join(artifactDir, `${base}.request.md`),
