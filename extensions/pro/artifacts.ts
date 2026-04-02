@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { ArtifactPaths, ProPlanMode, ProPlanState } from "./types.js";
+import type { ArtifactPaths, ProRunState } from "./types.js";
 
 function pad2(value: number): string {
     return String(value).padStart(2, "0");
@@ -31,34 +31,39 @@ function sanitizeSegment(value: string): string {
 }
 
 export async function createArtifactDir(anchorEntryId: string): Promise<string> {
-    const root = path.join(os.homedir(), ".pi", "agent", "pro-plan");
+    const root = path.join(os.homedir(), ".pi", "agent", "pro");
     const cwdName = sanitizeSegment(path.basename(process.cwd()));
     const dir = path.join(root, `${timestampForPath()}-${cwdName}-${anchorEntryId.slice(0, 8)}`);
     await mkdir(dir, { recursive: true });
     return dir;
 }
 
-export function artifactPaths(
-    artifactDir: string,
-    passNumber: number,
-    mode: ProPlanMode,
-    hasPack: boolean,
-): ArtifactPaths {
-    const base = `${mode}-${String(passNumber).padStart(3, "0")}-${timestampForPath()}`;
+export function artifactPaths(artifactDir: string, passNumber: number, hasPack: boolean): ArtifactPaths {
+    const artifactPrefix = `pass-${String(passNumber).padStart(3, "0")}-${timestampForPath()}`;
 
     return {
-        requestPath: path.join(artifactDir, `${base}.request.md`),
-        responsePath: path.join(artifactDir, `${base}.response.md`),
-        logPath: path.join(artifactDir, `${base}.oracle.log`),
-        metaPath: path.join(artifactDir, `${base}.meta.json`),
-        packPath: hasPack ? path.join(artifactDir, `${base}.pack.md`) : undefined,
+        artifactPrefix,
+        requestPath: path.join(artifactDir, `${artifactPrefix}.request.md`),
+        responsePath: path.join(artifactDir, `${artifactPrefix}.response.md`),
+        submitPath: path.join(artifactDir, `${artifactPrefix}.submit.md`),
+        metaPath: path.join(artifactDir, `${artifactPrefix}.meta.json`),
+        packPath: hasPack ? path.join(artifactDir, `${artifactPrefix}.pack.md`) : undefined,
     };
+}
+
+export function artifactPrefixFromPath(filePath: string | undefined): string | undefined {
+    if (!filePath) {
+        return undefined;
+    }
+
+    const baseName = path.basename(filePath);
+    return baseName.replace(/\.(request|response|submit|pack)\.md$|\.meta\.json$/, "") || undefined;
 }
 
 export async function writeJson(targetPath: string, value: unknown): Promise<void> {
     await writeFile(targetPath, `${JSON.stringify(value, null, 4)}\n`, "utf8");
 }
 
-export async function writeStateFile(artifactDir: string, state: ProPlanState): Promise<void> {
+export async function writeStateFile(artifactDir: string, state: ProRunState): Promise<void> {
     await writeJson(path.join(artifactDir, "state.json"), state);
 }

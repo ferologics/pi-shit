@@ -12,7 +12,7 @@ Custom extensions for [pi-coding-agent](https://github.com/badlogic/pi-mono).
 | [`pi-notify`](pi-notify/)                       | Desktop notifications when the agent finishes                                 |
 | [`pi-system-theme`](pi-system-theme/)           | Sync Pi theme with macOS dark/light mode and configurable theme names         |
 | [`plan-mode`](plan-mode/)                       | Read-only plan mode with progress tracking and questionnaire support          |
-| [`pro-plan`](pro-plan/)                         | Same-session planning workflow with optional ChatGPT Pro passes via Oracle    |
+| [`pro`](pro/)                                   | Branch-scoped `/pro` workflow with manual ChatGPT Pro handoff                 |
 | [`pi-verbosity-control`](pi-verbosity-control/) | Per-model OpenAI verbosity overrides with a keyboard toggle                   |
 
 Each extension folder contains full usage details and examples.
@@ -34,6 +34,6 @@ ln -s ~/dev/pi-extensions/pi-ghostty-lazygit ~/.pi/agent/extensions/
 ln -s ~/dev/pi-extensions/pi-notify ~/.pi/agent/extensions/
 ln -s ~/dev/pi-extensions/pi-system-theme ~/.pi/agent/extensions/
 ln -s ~/dev/pi-extensions/plan-mode ~/.pi/agent/extensions/
-ln -s ~/dev/pi-extensions/pro-plan ~/.pi/agent/extensions/
+ln -s ~/dev/pi-extensions/pro ~/.pi/agent/extensions/
 ln -s ~/dev/pi-extensions/pi-verbosity-control ~/.pi/agent/extensions/
 ```

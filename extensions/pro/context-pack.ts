@@ -14,7 +14,7 @@ import type {
     RelatedCandidate,
     ScribeTargetRequest,
 } from "../deep-review/context-pack/types.js";
-import type { ContextPackResult, CountTokensResult, OmittedFile, PackedFile, ProPlanPassOptions } from "./types.js";
+import type { ContextPackResult, CountTokensResult, OmittedFile, PackedFile, ProPassOptions } from "./types.js";
 
 const execFileAsync = promisify(execFile);
 const EXEC_MAX_BUFFER = 128 * 1024 * 1024;
@@ -37,12 +37,12 @@ function isScribeTarget(value: string): boolean {
     return SCRIBE_TARGET_EXTENSIONS.has(fileExtension(value));
 }
 
-function createFilterOptions(projectDir: string, input: ProPlanPassOptions, related: boolean): ContextPackOptions {
+function createFilterOptions(projectDir: string, input: ProPassOptions, related: boolean): ContextPackOptions {
     return {
         projectDir,
         baseRef: "HEAD",
         budget: input.budget,
-        outputName: "pro-plan-pack",
+        outputName: "pro-pack",
         tmpOutput: true,
         includeDependents: input.includeDependents,
         includeDocs: related ? input.includeDocs : true,
@@ -177,6 +177,57 @@ async function resolvePathSpecs(projectDir: string, specs: string[]): Promise<{ 
     };
 }
 
+async function resolveChangedFiles(repoRoot: string, ref: string): Promise<{ files: string[]; warnings: string[] }> {
+    const warnings: string[] = [];
+
+    try {
+        const args = ["-C", repoRoot, "diff", "--name-only", "--diff-filter=ACMR"];
+        if (ref === "HEAD") {
+            args.push("HEAD");
+        } else {
+            args.push(`${ref}...HEAD`);
+        }
+
+        const result = await execFileAsync("git", args, {
+            maxBuffer: EXEC_MAX_BUFFER,
+        });
+
+        const files = result.stdout
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .filter((line) => line.length > 0)
+            .map((line) => path.resolve(repoRoot, line));
+
+        if (files.length === 0) {
+            warnings.push(`Changed source matched no files for ref: ${ref}`);
+        }
+
+        return { files, warnings };
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        throw new Error(`Failed to resolve changed files for ref ${ref}: ${message}`);
+    }
+}
+
+async function resolveDiffText(repoRoot: string, ref: string): Promise<string> {
+    try {
+        const args = ["-C", repoRoot, "diff", "--no-ext-diff", "--submodule=diff"];
+        if (ref === "HEAD") {
+            args.push("HEAD");
+        } else {
+            args.push(`${ref}...HEAD`);
+        }
+
+        const result = await execFileAsync("git", args, {
+            maxBuffer: EXEC_MAX_BUFFER,
+        });
+        return result.stdout.trim();
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        throw new Error(`Failed to build diff for ref ${ref}: ${message}`);
+    }
+}
+
 async function countTokensForFile(filePath: string): Promise<CountTokensResult> {
     try {
         const result = await execFileAsync("tokencount", ["--encoding", TOKEN_ENCODING, filePath], {
@@ -200,7 +251,7 @@ async function countTokensForFile(filePath: string): Promise<CountTokensResult> 
 }
 
 async function countTokensForText(text: string): Promise<CountTokensResult> {
-    const scratchDir = await mkdtemp(path.join(os.tmpdir(), "pro-plan-token-"));
+    const scratchDir = await mkdtemp(path.join(os.tmpdir(), "pro-token-"));
     const scratchPath = path.join(scratchDir, "count.txt");
 
     try {
@@ -271,17 +322,48 @@ function appendPackedFiles(lines: string[], title: string, files: PackedFile[]):
     }
 }
 
-function renderPackMarkdown(seedFiles: PackedFile[], relatedFiles: PackedFile[], omittedFiles: OmittedFile[]): string {
+function appendDiff(lines: string[], diffText: string | undefined, diffRef: string | undefined): void {
+    const normalized = diffText?.trim() ?? "";
+    const title = diffRef ? `## Diff (${diffRef})` : "## Diff";
+
+    lines.push(title);
+    lines.push("");
+
+    if (!normalized) {
+        lines.push("None");
+        lines.push("");
+        return;
+    }
+
+    const fence = codeFenceFor(normalized);
+    lines.push(fence);
+    lines.push(normalized);
+    if (!normalized.endsWith("\n")) {
+        lines.push("");
+    }
+    lines.push(fence);
+    lines.push("");
+}
+
+function renderPackMarkdown(
+    seedFiles: PackedFile[],
+    relatedFiles: PackedFile[],
+    omittedFiles: OmittedFile[],
+    diffText?: string,
+    diffRef?: string,
+): string {
     const lines: string[] = [];
 
-    lines.push("# Pro Plan Context Pack");
+    lines.push("# Pro Context Pack");
     lines.push("");
     lines.push(`- Generated: ${new Date().toISOString()}`);
     lines.push(`- Seed files: ${seedFiles.length}`);
     lines.push(`- Related files: ${relatedFiles.length}`);
     lines.push(`- Omitted files: ${omittedFiles.length}`);
+    lines.push(`- Includes diff: ${diffText?.trim() ? "yes" : "no"}`);
     lines.push("");
 
+    appendDiff(lines, diffText, diffRef);
     appendPackedFiles(lines, `## Seed files (${seedFiles.length})`, seedFiles);
     appendPackedFiles(lines, `## Related files (${relatedFiles.length})`, relatedFiles);
 
@@ -299,27 +381,41 @@ function renderPackMarkdown(seedFiles: PackedFile[], relatedFiles: PackedFile[],
     return lines.join("\n");
 }
 
-export async function buildPlanningContextPack(
-    options: ProPlanPassOptions,
-    outputPath: string,
-): Promise<ContextPackResult> {
-    if (options.pathSpecs.length === 0) {
-        throw new Error("No path specs were provided for this code-backed pass.");
+export async function buildContextPack(options: ProPassOptions, outputPath: string): Promise<ContextPackResult> {
+    if (options.pathSpecs.length === 0 && !options.changedRef && !options.diffRef) {
+        throw new Error("No code context was selected for this code-backed pass.");
     }
 
     const projectDir = path.resolve(options.projectDir);
     const repoRoot = await resolveRepoRoot(projectDir);
-    const resolved = await resolvePathSpecs(projectDir, options.pathSpecs);
     const seedFilterOptions = createFilterOptions(projectDir, options, false);
     const relatedFilterOptions = createFilterOptions(projectDir, options, true);
     const omittedFiles: OmittedFile[] = [];
+    const warnings: string[] = [];
+
+    const resolvedPaths = await resolvePathSpecs(projectDir, options.pathSpecs);
+    warnings.push(...resolvedPaths.warnings);
+
+    const changedFiles = options.changedRef
+        ? await resolveChangedFiles(repoRoot, options.changedRef)
+        : { files: [], warnings: [] };
+    warnings.push(...changedFiles.warnings);
+
+    const seedAbsolutePaths = new Set<string>(
+        [...resolvedPaths.files, ...changedFiles.files].map((file) => path.resolve(file)),
+    );
 
     const seedFiles: PackedFile[] = [];
-    for (const absolutePath of resolved.files) {
+    for (const absolutePath of [...seedAbsolutePaths].sort()) {
         const relativePath = normalizePath(path.relative(repoRoot, absolutePath));
         const decision = evaluateChangedFile(relativePath, seedFilterOptions);
         if (!decision.include) {
             omittedFiles.push({ path: relativePath, reason: decision.reason ?? "filtered:unknown" });
+            continue;
+        }
+
+        if (!(await pathExists(absolutePath))) {
+            omittedFiles.push({ path: relativePath, reason: "filtered:missing" });
             continue;
         }
 
@@ -331,22 +427,30 @@ export async function buildPlanningContextPack(
         seedFiles.push(await loadPackedFile(repoRoot, absolutePath));
     }
 
-    if (seedFiles.length === 0) {
-        throw new Error("No seed files were eligible after filtering. Adjust --path inputs or disable code packing.");
+    const diffText = options.diffRef ? await resolveDiffText(repoRoot, options.diffRef) : undefined;
+    if (options.diffRef && !diffText) {
+        warnings.push(`Diff source matched no hunks for ref: ${options.diffRef}`);
     }
 
-    const seedBudget = seedFiles.reduce((sum, file) => sum + file.tokens, 0);
-    if (seedBudget > options.budget) {
+    if (seedFiles.length === 0 && !diffText) {
         throw new Error(
-            `Explicit seed files require ${seedBudget.toLocaleString()} tokens, exceeding the available pack budget of ${options.budget.toLocaleString()} tokens. Narrow the seed paths or raise the budget.`,
+            "No code context was eligible after resolving the selected sources. Adjust --path / --changed / --diff inputs or disable code packing.",
         );
     }
 
-    const warnings = [...resolved.warnings];
+    const seedBudget = seedFiles.reduce((sum, file) => sum + file.tokens, 0);
+    const diffTokens = diffText ? await countTokensForText(diffText) : { tokens: 0, method: "estimate" as const };
+    const baselineTokens = seedBudget + diffTokens.tokens;
+    if (baselineTokens > options.budget) {
+        throw new Error(
+            `Selected code context requires ${baselineTokens.toLocaleString()} tokens, exceeding the available pack budget of ${options.budget.toLocaleString()} tokens. Narrow the selected sources or raise the budget.`,
+        );
+    }
+
     const seedSet = new Set(seedFiles.map((file) => file.path));
     const relatedFiles: PackedFile[] = [];
 
-    if (options.includeDependents) {
+    if (options.includeDependents && seedFiles.length > 0) {
         const scribeTargets: ScribeTargetRequest[] = seedFiles
             .filter((file) => isScribeTarget(file.path))
             .map((file) => ({ target: file.path, includeDependents: true }));
@@ -412,7 +516,7 @@ export async function buildPlanningContextPack(
         const ranked = rankRelatedCandidates(estimatedCandidates);
         const fit = fitRelatedCandidatesToBudget({
             budget: options.budget,
-            baselineTokens: seedBudget,
+            baselineTokens,
             candidates: ranked,
         });
 
@@ -430,12 +534,12 @@ export async function buildPlanningContextPack(
         }
     }
 
-    const markdown = renderPackMarkdown(seedFiles, relatedFiles, omittedFiles);
+    const markdown = renderPackMarkdown(seedFiles, relatedFiles, omittedFiles, diffText, options.diffRef);
     await writeFile(outputPath, markdown, "utf8");
     const tokenCount = await countTokensForText(markdown);
     if (tokenCount.tokens > options.budget) {
         throw new Error(
-            `Rendered context pack requires ${tokenCount.tokens.toLocaleString()} tokens, exceeding the available pack budget of ${options.budget.toLocaleString()} tokens. Narrow the seed paths or raise the budget.`,
+            `Rendered context pack requires ${tokenCount.tokens.toLocaleString()} tokens, exceeding the available pack budget of ${options.budget.toLocaleString()} tokens. Narrow the selected sources or raise the budget.`,
         );
     }
 
@@ -445,6 +549,8 @@ export async function buildPlanningContextPack(
         seedFiles,
         relatedFiles,
         omittedFiles,
+        diffText,
+        diffRef: options.diffRef,
         warnings,
         tokenCount,
     };

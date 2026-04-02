@@ -8,7 +8,7 @@ Use this file as an index (and for truly shared extension-platform chores).
 - Pi Ghostty Hunk: `pi-ghostty-hunk/TODO.md`
 - Pi system theme: `pi-system-theme/TODO.md`
 - Plan mode: `plan-mode/TODO.md`
-- Pro plan: `pro-plan/TODO.md`
+- Pro: `pro/TODO.md`
 - Pi verbosity control: `pi-verbosity-control/TODO.md`
 - Prompt stash: `prompt-stash/TODO.md`
 
