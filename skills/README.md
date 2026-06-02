@@ -1,6 +1,6 @@
 # Pi Skills
 
-My custom skills for [Pi](https://github.com/badlogic/pi-mono).
+My custom skills for [Pi](https://www.npmjs.com/package/@earendil-works/pi-coding-agent).
 
 ## Skills
 
