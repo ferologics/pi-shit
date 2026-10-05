@@ -46,6 +46,8 @@ If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi
 
 Use `just release` to orchestrate version bumps, mirror publish, and GitHub releases (npm publish runs in per-repo trusted publisher workflows).
 
+Releases require a clean working tree. Commit implementation changes first; the release script commits package version bumps and matching `package-lock.json` version metadata together.
+
 For a compact visual flow, see the Mermaid diagram in `README.md` under **Release workflow**.
 
 - Dry-run first: `just release-dry pi-deep-review minor`
@@ -89,3 +91,4 @@ Runs:
 - Skills check (`just --justfile skills/justfile check`)
 - Full extensions check (`just --justfile extensions/justfile check`)
 - Release config validation (`node scripts/release.mjs --validate`)
+- Release execution and dry-run regression tests (`node --test scripts/release.test.mjs`)

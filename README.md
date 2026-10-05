@@ -80,6 +80,8 @@ just update-themes
 
 Use release automation for version bump propagation + mirror publish + GitHub releases (npm publish is handled by per-repo trusted publisher workflows).
 
+Commit implementation changes before releasing. The release script requires a clean working tree and keeps package versions and lockfile version metadata aligned.
+
 Dry-run first:
 
 ```bash

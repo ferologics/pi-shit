@@ -416,6 +416,18 @@ function executeRelease(options, plan) {
             item.manifest.version = item.to;
             writeManifest(item.definition.manifestPath, item.manifest);
         }
+        const lockfilePath = normalizePath(path.join(item.definition.packageDir, "package-lock.json"));
+        if (fs.existsSync(path.join(ROOT, lockfilePath))) {
+            changedManifestPaths.push(lockfilePath);
+            if (!options.dryRun) {
+                const lockfile = readManifest(lockfilePath);
+                lockfile.version = item.to;
+                if (lockfile.packages?.[""]) {
+                    lockfile.packages[""].version = item.to;
+                }
+                writeManifest(lockfilePath, lockfile);
+            }
+        }
     }
 
     run("git", ["add", ...unique(changedManifestPaths)], { dryRun: options.dryRun });

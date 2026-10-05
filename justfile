@@ -1,7 +1,7 @@
 default:
     @just --list
 
-check: fmt skills-check extensions-check release-config-check
+check: fmt skills-check extensions-check release-config-check release-test
 
 fmt:
     dprint fmt
@@ -31,6 +31,9 @@ regen-manifest:
 
 release-config-check:
     node scripts/release.mjs --validate
+
+release-test:
+    node --test scripts/release.test.mjs
 
 # Release automation (version bumps + mirror publish + GitHub releases; npm publish via trusted workflows).
 release target bump="patch":
