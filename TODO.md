@@ -18,6 +18,7 @@
 - Pi verbosity control backlog: `extensions/pi-verbosity-control/TODO.md`
 - Plan mode backlog: `extensions/plan-mode/TODO.md`
 - PR context packer backlog: `skills/pr-context-packer/TODO.md`
+- Session analyzer backlog (including the skill bench): `skills/session-analyzer/TODO.md`
 
 ## Package-level integration backlog
 

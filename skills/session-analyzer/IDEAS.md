@@ -1,42 +1,9 @@
-# Ideas & Future Improvements
+# Ideas
 
-## Worktree Support
+## Exact worktree matching
 
-**Problem:** Sessions are stored by absolute path, so git worktrees are treated as separate projects even though they share the same repo.
+`--pattern <substring>` covers worktrees today, because their session dirs share the repo name: `--pattern orders-app` picks up `orders-app-1`, `orders-app-home-address`, and so on. A substring can also over-match unrelated dirs (`--pattern pi` catches `pi-mono`, `pi-shit`, ...). An `--include-worktrees` flag that reads `git worktree list --porcelain` would match exactly. Worth adding only if over-matching gets in the way.
 
-Example:
+## Spot repeats of existing rules in `--analyze`
 
-- `/path/to/myrepo` → `--path-to-myrepo--`
-- `/path/to/myrepo-feature` → `--path-to-myrepo-feature--`
-
-Patterns that span worktrees are missed entirely.
-
-**Proposed Solution:** Add `--include-worktrees` flag that:
-
-1. Detects if cwd is a git repo
-2. Uses `git worktree list --porcelain` to find all worktrees
-3. Merges sessions from all related worktree paths before analysis
-
-```javascript
-import { execSync } from "child_process";
-
-function getWorktreePaths(cwd) {
-    try {
-        const output = execSync("git worktree list --porcelain", { cwd, encoding: "utf8" });
-        return output
-            .split("\n")
-            .filter(line => line.startsWith("worktree "))
-            .map(line => line.replace("worktree ", ""));
-    } catch {
-        return [cwd]; // Not a git repo or no worktrees
-    }
-}
-```
-
-**Workaround (current):** Run analyzer multiple times with same output dir:
-
-```bash
-./analyze.js /path/to/main-repo --output ./combined
-./analyze.js /path/to/worktree --output ./combined
-./analyze.js --analyze --output ./combined
-```
+Routing treats a correction that an existing rule already covers as a repeat. Analysis subagents only see transcripts, so they catch this only when a transcript quotes the rule. Passing the target dir's AGENTS.md chain (`~/AGENTS.md` down to the project) to the aggregator would let it check every pattern against existing rules. `/retro` already does this because it runs inside the session.

@@ -18,9 +18,16 @@ import { spawn } from "child_process";
 import { createInterface } from "readline";
 import { homedir, tmpdir } from "os";
 import { join, resolve } from "path";
+import { fileURLToPath } from "url";
 import { parseSessionEntries } from "@earendil-works/pi-coding-agent";
 
 const MAX_CHARS_PER_FILE = 100_000; // ~20k tokens
+
+// SKILL.md owns the routing rules; subagent prompts embed that section verbatim.
+const ROUTING = readFileSync(fileURLToPath(new URL("./SKILL.md", import.meta.url)), "utf8")
+    .split("\n## Routing\n")[1]
+    .split("\n## ")[0]
+    .trim();
 
 function cwdToSessionDir(cwd) {
     const normalized = resolve(cwd).replace(/\//g, "-");
@@ -88,7 +95,7 @@ function splitOversizedTranscript(transcript, maxChars) {
 
 function runSubagent(prompt, cwd) {
     return new Promise((resolve) => {
-        const child = spawn("pi", ["--mode", "json", "--tools", "read,write", "-p", prompt], {
+        const child = spawn("pi", ["--mode", "json", "--no-session", "--tools", "read,write", "-p", prompt], {
             cwd,
             stdio: ["ignore", "pipe", "pipe"],
         });
@@ -284,7 +291,7 @@ async function main() {
         return;
     }
 
-    const analysisPrompt = `You are analyzing session transcripts to identify recurring user instructions that could be automated.
+    const analysisPrompt = `You are analyzing session transcripts to find recurring user instructions and corrections, and to route each one to the layer that should hold it.
 
 READING INSTRUCTIONS:
 The transcript file is large. Read it in chunks of 1000 lines using offset/limit parameters:
@@ -294,27 +301,26 @@ The transcript file is large. Read it in chunks of 1000 lines using offset/limit
 4. Only after reading the ENTIRE file, perform the analysis and write the summary
 
 ANALYSIS TASK:
-Look for patterns where the user repeatedly gives similar instructions. These could become:
-- AGENTS.md entries: coding style rules, behavior guidelines, project conventions
-- Skills: multi-step workflows with external tools (search, browser, APIs)
-- Prompt templates: reusable prompts for common tasks
+Look for patterns where the user repeatedly gives similar instructions or corrects the same kind of mistake. Route each pattern with these rules:
+
+${ROUTING}
 
 OUTPUT FORMAT (strict):
 Write a file with exactly this structure. Use --- as separator between patterns.
 
 PATTERN: <short descriptive name>
-TYPE: agents-md | skill | prompt-template
+TYPE: repo-check | repo-skill | repo-agents-md | prompt-template | personal-skill | global-agents-md
 FREQUENCY: <number of times observed>
+WHY THIS LAYER: <one line: why no earlier layer can hold it>
 EVIDENCE:
 - "<exact quote 1>"
 - "<exact quote 2>"
 - "<exact quote 3>"
 DRAFT:
-<proposed content for AGENTS.md entry, SKILL.md, or prompt template>
+<proposed content: the check, SKILL.md, AGENTS.md entry, or prompt template>
 ---
 
 Rules:
-- Only include patterns that appear 2+ times
 - EVIDENCE must contain exact quotes from the transcripts
 - DRAFT must be ready-to-use content
 - If no patterns found, write "NO PATTERNS FOUND"
@@ -402,16 +408,21 @@ ${summaryPaths}
 Then create a consolidated final summary that:
 1. Merges duplicate patterns (same pattern found in multiple files)
 2. Ranks patterns by total frequency across all files
-3. Groups patterns by type (agents-md, skill, prompt-template)
+3. Groups patterns by TYPE, in the layer order of the routing rules below
 4. Provides the best/most complete DRAFT for each unique pattern
+
+Routing rules (re-check each pattern's TYPE against them while merging):
+
+${ROUTING}
 
 OUTPUT FORMAT (strict):
 Write the final summary with this structure:
 
-# AGENTS.MD PATTERNS (sorted by frequency)
+# <TYPE> (sorted by frequency)
 
 ## Pattern: <name>
 Total Frequency: <sum across all files>
+Why this layer: <one line>
 Evidence:
 - "<best quotes>"
 Draft:
@@ -419,23 +430,11 @@ Draft:
 
 ---
 
-# SKILL PATTERNS (sorted by frequency)
-
-## Pattern: <name>
-...
-
----
-
-# PROMPT TEMPLATE PATTERNS (sorted by frequency)
-
-## Pattern: <name>
-...
-
----
+(one section per TYPE that has patterns, in layer order)
 
 # SUMMARY
 - Total unique patterns found: <N>
-- Patterns by type: agents-md (<N>), skill (<N>), prompt-template (<N>)
+- Patterns by TYPE: <TYPE> (<N>), ...
 - Top 3 most frequent patterns: <list>
 
 Write the final summary to ${isolatedFinalSummaryPath}`;
