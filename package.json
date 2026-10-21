@@ -27,8 +27,9 @@
             "extensions/pi-notify/index.ts",
             "extensions/pi-slack-user/index.ts",
             "extensions/pi-system-theme/index.ts",
-            "extensions/plan-mode/index.ts",
-            "extensions/pi-verbosity-control/index.ts"
+            "extensions/pi-verbosity-control/index.ts",
+            "extensions/pi-web/index.ts",
+            "extensions/plan-mode/index.ts"
         ],
         "skills": [
             "skills/brave-search/SKILL.md",
@@ -47,6 +48,12 @@
             "themes/rose-pine-dawn.json",
             "themes/rose-pine.json"
         ]
+    },
+    "dependencies": {
+        "@mozilla/readability": "^0.6.0",
+        "jsdom": "^29.1.1",
+        "turndown": "^7.2.4",
+        "turndown-plugin-gfm": "^1.0.2"
     },
     "peerDependencies": {
         "@earendil-works/pi-agent-core": "*",
