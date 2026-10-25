@@ -29,7 +29,7 @@
 - [ ] Decide long-term release orchestration split (local `just release` vs GitHub-first), including auto-tagging/version bump ownership and rollback flow.
 - [ ] Bootstrap npm for standalone `pi-quote-copy` (repo + mirror exist; npm 404): `npm login`, `npm publish` from `~/dev/pi-quote-copy`, `npm trust github pi-quote-copy --repo ferologics/pi-quote-copy --file npm-publish.yml --allow-publish`, then `gh release create v0.1.0 --repo ferologics/pi-quote-copy --target main --generate-notes`. After that, `just release pi-quote-copy <bump>` works.
 - [ ] Release the unpublished `pi-notify` change (`8131b8d`, native OSC 777 on Windows Terminal): npm and the `ferologics/pi-notify` mirror still have the pre-change `1.4.0`. Run `just release pi-notify patch`.
-- [ ] Publish standalone `pi-web` (mirror `ferologics/pi-web` exists, but it has no `package.json`, so it is not installable on its own). Add `package.json` (pi manifest, its `@mozilla/readability`/`jsdom`/`turndown`/`turndown-plugin-gfm` deps, `piRelease`) and `.github/workflows/npm-publish.yml` like `pi-quote-copy`, add the `pi-web` release target to the docs, then bootstrap npm (first manual publish, `npm trust`, `gh release create`).
+- [ ] Bootstrap npm for standalone `@ferologics/pi-web` (repo + mirror + workflow exist; npm 404; unscoped `pi-web` belongs to someone else): `npm login`, `npm publish` from `~/dev/pi-web`, `npm trust github @ferologics/pi-web --repo ferologics/pi-web --file npm-publish.yml --allow-publish`, then `gh release create v0.1.0 --repo ferologics/pi-web --target main --generate-notes`. After that, `just release @ferologics/pi-web <bump>` works.
 
 ## Decide strategy for upstream Pi example extensions
 

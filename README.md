@@ -131,6 +131,7 @@ Supported targets (canonical package names only):
 - `pi-quote-copy` (bumps `pi-quote-copy` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-system-theme` (bumps `pi-system-theme` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-verbosity-control` (bumps `pi-verbosity-control` → `@ferologics/pi-extensions` → `pi-shit`)
+- `@ferologics/pi-web` (bumps `@ferologics/pi-web` → `@ferologics/pi-extensions` → `pi-shit`)
 - `@ferologics/pi-extensions` (bumps `@ferologics/pi-extensions` → `pi-shit`)
 - `@ferologics/pi-skills` (bumps `@ferologics/pi-skills` → `pi-shit`)
 - `pi-shit` (bumps only root package)

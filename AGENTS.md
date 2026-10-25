@@ -68,6 +68,7 @@ Target propagation rules (canonical package names only):
 - `pi-quote-copy`: `pi-quote-copy` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-system-theme`: `pi-system-theme` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `pi-verbosity-control`: `pi-verbosity-control` -> `@ferologics/pi-extensions` -> `pi-shit`
+- `@ferologics/pi-web`: `@ferologics/pi-web` -> `@ferologics/pi-extensions` -> `pi-shit`
 - `@ferologics/pi-extensions`: `@ferologics/pi-extensions` -> `pi-shit`
 - `@ferologics/pi-skills`: `@ferologics/pi-skills` -> `pi-shit`
 - `pi-shit`: root only
