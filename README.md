@@ -41,6 +41,7 @@ just publish
 - `extensions/pi-quote-copy/` → `pi-quote-copy`
 - `extensions/pi-system-theme/` → `pi-system-theme`
 - `extensions/pi-verbosity-control/` → `pi-verbosity-control`
+- `extensions/pi-web/` → `pi-web`
 
 Or publish individually:
 
@@ -55,6 +56,7 @@ just publish-pi-notify
 just publish-pi-quote-copy
 just publish-pi-system-theme
 just publish-pi-verbosity-control
+just publish-pi-web
 ```
 
 Repair-only flow (use only for emergency downstream hotfixes; normal work should stay in `pi-shit`):
@@ -70,6 +72,7 @@ just pull-pi-notify
 just pull-pi-quote-copy
 just pull-pi-system-theme
 just pull-pi-verbosity-control
+just pull-pi-web
 ```
 
 Theme sync still pulls from `zenobi-us/pi-rose-pine`:
@@ -80,7 +83,7 @@ just update-themes
 
 `just repair-pull` runs all mirror pulls (`pull-skills`, `pull-extensions`, `update-themes`) and regenerates the package manifest.
 
-`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-ghostty-hunk`, `pull-pi-ghostty-lazygit`, `pull-pi-jobs`, `pull-pi-notify`, `pull-pi-quote-copy`, `pull-pi-system-theme`, and `pull-pi-verbosity-control`, so nested mirror pulls are included automatically.
+`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-ghostty-hunk`, `pull-pi-ghostty-lazygit`, `pull-pi-jobs`, `pull-pi-notify`, `pull-pi-quote-copy`, `pull-pi-system-theme`, `pull-pi-verbosity-control`, and `pull-pi-web`, so nested mirror pulls are included automatically.
 
 ## Release workflow
 

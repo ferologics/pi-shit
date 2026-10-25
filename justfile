@@ -55,6 +55,7 @@ publish:
     @just publish-pi-quote-copy
     @just publish-pi-system-theme
     @just publish-pi-verbosity-control
+    @just publish-pi-web
 
 publish-skills skills-branch="master":
     git subtree push --prefix=skills pi-skills {{skills-branch}}
@@ -86,6 +87,9 @@ publish-pi-system-theme pi-system-theme-branch="main":
 publish-pi-verbosity-control pi-verbosity-control-branch="main":
     git subtree push --prefix=extensions/pi-verbosity-control git@github.com:ferologics/pi-verbosity-control.git {{pi-verbosity-control-branch}}
 
+publish-pi-web pi-web-branch="main":
+    git subtree push --prefix=extensions/pi-web git@github.com:ferologics/pi-web.git {{pi-web-branch}}
+
 # Repair flow: pull one-off direct downstream edits back into pi-shit.
 repair-pull:
     @just pull-skills
@@ -96,7 +100,7 @@ repair-pull:
 pull-skills skills-branch="master":
     git subtree pull --prefix=skills pi-skills {{skills-branch}}
 
-pull-extensions extensions-branch="main" pi-deep-review-branch="main" pi-ghostty-hunk-branch="main" pi-ghostty-lazygit-branch="main" pi-jobs-branch="main" pi-notify-branch="master" pi-quote-copy-branch="main" pi-system-theme-branch="main" pi-verbosity-control-branch="main":
+pull-extensions extensions-branch="main" pi-deep-review-branch="main" pi-ghostty-hunk-branch="main" pi-ghostty-lazygit-branch="main" pi-jobs-branch="main" pi-notify-branch="master" pi-quote-copy-branch="main" pi-system-theme-branch="main" pi-verbosity-control-branch="main" pi-web-branch="main":
     git subtree pull --prefix=extensions pi-extensions {{extensions-branch}}
     just pull-pi-deep-review pi-deep-review-branch={{pi-deep-review-branch}}
     just pull-pi-ghostty-hunk pi-ghostty-hunk-branch={{pi-ghostty-hunk-branch}}
@@ -106,6 +110,7 @@ pull-extensions extensions-branch="main" pi-deep-review-branch="main" pi-ghostty
     just pull-pi-quote-copy pi-quote-copy-branch={{pi-quote-copy-branch}}
     just pull-pi-system-theme pi-system-theme-branch={{pi-system-theme-branch}}
     just pull-pi-verbosity-control pi-verbosity-control-branch={{pi-verbosity-control-branch}}
+    just pull-pi-web pi-web-branch={{pi-web-branch}}
 
 pull-pi-deep-review pi-deep-review-branch="main":
     git subtree pull --prefix=extensions/deep-review git@github.com:ferologics/pi-deep-review.git {{pi-deep-review-branch}}
@@ -130,6 +135,9 @@ pull-pi-system-theme pi-system-theme-branch="main":
 
 pull-pi-verbosity-control pi-verbosity-control-branch="main":
     git subtree pull --prefix=extensions/pi-verbosity-control git@github.com:ferologics/pi-verbosity-control.git {{pi-verbosity-control-branch}}
+
+pull-pi-web pi-web-branch="main":
+    git subtree pull --prefix=extensions/pi-web git@github.com:ferologics/pi-web.git {{pi-web-branch}}
 
 update-themes:
     mkdir -p themes
