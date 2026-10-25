@@ -37,6 +37,7 @@ just publish
 - `extensions/pi-ghostty-hunk/` → `pi-ghostty-hunk`
 - `extensions/pi-ghostty-lazygit/` → `pi-ghostty-lazygit`
 - `extensions/pi-notify/` → `pi-notify`
+- `extensions/pi-quote-copy/` → `pi-quote-copy`
 - `extensions/pi-system-theme/` → `pi-system-theme`
 - `extensions/pi-verbosity-control/` → `pi-verbosity-control`
 
@@ -49,6 +50,7 @@ just publish-pi-deep-review
 just publish-pi-ghostty-hunk
 just publish-pi-ghostty-lazygit
 just publish-pi-notify
+just publish-pi-quote-copy
 just publish-pi-system-theme
 just publish-pi-verbosity-control
 ```
@@ -62,6 +64,7 @@ just pull-pi-deep-review
 just pull-pi-ghostty-hunk
 just pull-pi-ghostty-lazygit
 just pull-pi-notify
+just pull-pi-quote-copy
 just pull-pi-system-theme
 just pull-pi-verbosity-control
 ```
@@ -74,7 +77,7 @@ just update-themes
 
 `just repair-pull` runs all mirror pulls (`pull-skills`, `pull-extensions`, `update-themes`) and regenerates the package manifest.
 
-`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-ghostty-hunk`, `pull-pi-ghostty-lazygit`, `pull-pi-notify`, `pull-pi-system-theme`, and `pull-pi-verbosity-control`, so nested mirror pulls are included automatically.
+`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-ghostty-hunk`, `pull-pi-ghostty-lazygit`, `pull-pi-notify`, `pull-pi-quote-copy`, `pull-pi-system-theme`, and `pull-pi-verbosity-control`, so nested mirror pulls are included automatically.
 
 ## Release workflow
 
@@ -119,6 +122,7 @@ Supported targets (canonical package names only):
 - `pi-ghostty-hunk` (bumps `pi-ghostty-hunk` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-ghostty-lazygit` (bumps `pi-ghostty-lazygit` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-notify` (bumps `pi-notify` → `@ferologics/pi-extensions` → `pi-shit`)
+- `pi-quote-copy` (bumps `pi-quote-copy` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-system-theme` (bumps `pi-system-theme` → `@ferologics/pi-extensions` → `pi-shit`)
 - `pi-verbosity-control` (bumps `pi-verbosity-control` → `@ferologics/pi-extensions` → `pi-shit`)
 - `@ferologics/pi-extensions` (bumps `@ferologics/pi-extensions` → `pi-shit`)

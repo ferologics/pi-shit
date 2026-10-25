@@ -51,6 +51,7 @@ publish:
     @just publish-pi-ghostty-hunk
     @just publish-pi-ghostty-lazygit
     @just publish-pi-notify
+    @just publish-pi-quote-copy
     @just publish-pi-system-theme
     @just publish-pi-verbosity-control
 
@@ -72,6 +73,9 @@ publish-pi-ghostty-lazygit pi-ghostty-lazygit-branch="main":
 publish-pi-notify pi-notify-branch="master":
     git subtree push --prefix=extensions/pi-notify git@github.com:ferologics/pi-notify.git {{pi-notify-branch}}
 
+publish-pi-quote-copy pi-quote-copy-branch="main":
+    git subtree push --prefix=extensions/pi-quote-copy git@github.com:ferologics/pi-quote-copy.git {{pi-quote-copy-branch}}
+
 publish-pi-system-theme pi-system-theme-branch="main":
     git subtree push --prefix=extensions/pi-system-theme git@github.com:ferologics/pi-system-theme.git {{pi-system-theme-branch}}
 
@@ -88,12 +92,13 @@ repair-pull:
 pull-skills skills-branch="master":
     git subtree pull --prefix=skills pi-skills {{skills-branch}}
 
-pull-extensions extensions-branch="main" pi-deep-review-branch="main" pi-ghostty-hunk-branch="main" pi-ghostty-lazygit-branch="main" pi-notify-branch="master" pi-system-theme-branch="main" pi-verbosity-control-branch="main":
+pull-extensions extensions-branch="main" pi-deep-review-branch="main" pi-ghostty-hunk-branch="main" pi-ghostty-lazygit-branch="main" pi-notify-branch="master" pi-quote-copy-branch="main" pi-system-theme-branch="main" pi-verbosity-control-branch="main":
     git subtree pull --prefix=extensions pi-extensions {{extensions-branch}}
     just pull-pi-deep-review pi-deep-review-branch={{pi-deep-review-branch}}
     just pull-pi-ghostty-hunk pi-ghostty-hunk-branch={{pi-ghostty-hunk-branch}}
     just pull-pi-ghostty-lazygit pi-ghostty-lazygit-branch={{pi-ghostty-lazygit-branch}}
     just pull-pi-notify pi-notify-branch={{pi-notify-branch}}
+    just pull-pi-quote-copy pi-quote-copy-branch={{pi-quote-copy-branch}}
     just pull-pi-system-theme pi-system-theme-branch={{pi-system-theme-branch}}
     just pull-pi-verbosity-control pi-verbosity-control-branch={{pi-verbosity-control-branch}}
 
@@ -108,6 +113,9 @@ pull-pi-ghostty-lazygit pi-ghostty-lazygit-branch="main":
 
 pull-pi-notify pi-notify-branch="master":
     git subtree pull --prefix=extensions/pi-notify git@github.com:ferologics/pi-notify.git {{pi-notify-branch}}
+
+pull-pi-quote-copy pi-quote-copy-branch="main":
+    git subtree pull --prefix=extensions/pi-quote-copy git@github.com:ferologics/pi-quote-copy.git {{pi-quote-copy-branch}}
 
 pull-pi-system-theme pi-system-theme-branch="main":
     git subtree pull --prefix=extensions/pi-system-theme git@github.com:ferologics/pi-system-theme.git {{pi-system-theme-branch}}
