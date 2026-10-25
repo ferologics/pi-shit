@@ -24,6 +24,7 @@
             "extensions/deep-review/index.ts",
             "extensions/pi-ghostty-hunk/index.ts",
             "extensions/pi-ghostty-lazygit/index.ts",
+            "extensions/pi-jobs/index.ts",
             "extensions/pi-notify/index.ts",
             "extensions/pi-quote-copy/index.ts",
             "extensions/pi-slack-user/index.ts",

@@ -4,7 +4,7 @@ Combined Pi package for personal extensions + skills.
 
 ## Structure
 
-- `extensions/` → Pi extensions (for example `deep-review`, `pi-ghostty-hunk`, `pi-ghostty-lazygit`, `pi-quote-copy`, `pi-slack-user`, `pi-system-theme`, `pi-web`, `plan-mode`, `pi-verbosity-control`)
+- `extensions/` → Pi extensions (for example `deep-review`, `pi-ghostty-hunk`, `pi-ghostty-lazygit`, `pi-jobs`, `pi-quote-copy`, `pi-slack-user`, `pi-system-theme`, `pi-web`, `plan-mode`, `pi-verbosity-control`)
 - `skills/` → Pi skills (including `pr-context-packer`)
 - `themes/` → Pi themes (`rose-pine`, `rose-pine-dawn`)
 
@@ -36,6 +36,7 @@ just publish
 - `extensions/deep-review/` → `pi-deep-review`
 - `extensions/pi-ghostty-hunk/` → `pi-ghostty-hunk`
 - `extensions/pi-ghostty-lazygit/` → `pi-ghostty-lazygit`
+- `extensions/pi-jobs/` → `pi-jobs`
 - `extensions/pi-notify/` → `pi-notify`
 - `extensions/pi-quote-copy/` → `pi-quote-copy`
 - `extensions/pi-system-theme/` → `pi-system-theme`
@@ -49,6 +50,7 @@ just publish-extensions
 just publish-pi-deep-review
 just publish-pi-ghostty-hunk
 just publish-pi-ghostty-lazygit
+just publish-pi-jobs
 just publish-pi-notify
 just publish-pi-quote-copy
 just publish-pi-system-theme
@@ -63,6 +65,7 @@ just pull-extensions
 just pull-pi-deep-review
 just pull-pi-ghostty-hunk
 just pull-pi-ghostty-lazygit
+just pull-pi-jobs
 just pull-pi-notify
 just pull-pi-quote-copy
 just pull-pi-system-theme
@@ -77,7 +80,7 @@ just update-themes
 
 `just repair-pull` runs all mirror pulls (`pull-skills`, `pull-extensions`, `update-themes`) and regenerates the package manifest.
 
-`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-ghostty-hunk`, `pull-pi-ghostty-lazygit`, `pull-pi-notify`, `pull-pi-quote-copy`, `pull-pi-system-theme`, and `pull-pi-verbosity-control`, so nested mirror pulls are included automatically.
+`pull-extensions` includes `pull-pi-deep-review`, `pull-pi-ghostty-hunk`, `pull-pi-ghostty-lazygit`, `pull-pi-jobs`, `pull-pi-notify`, `pull-pi-quote-copy`, `pull-pi-system-theme`, and `pull-pi-verbosity-control`, so nested mirror pulls are included automatically.
 
 ## Release workflow
 

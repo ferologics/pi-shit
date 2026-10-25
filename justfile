@@ -50,6 +50,7 @@ publish:
     @just publish-pi-deep-review
     @just publish-pi-ghostty-hunk
     @just publish-pi-ghostty-lazygit
+    @just publish-pi-jobs
     @just publish-pi-notify
     @just publish-pi-quote-copy
     @just publish-pi-system-theme
@@ -69,6 +70,9 @@ publish-pi-ghostty-hunk pi-ghostty-hunk-branch="main":
 
 publish-pi-ghostty-lazygit pi-ghostty-lazygit-branch="main":
     git subtree push --prefix=extensions/pi-ghostty-lazygit git@github.com:ferologics/pi-ghostty-lazygit.git {{pi-ghostty-lazygit-branch}}
+
+publish-pi-jobs pi-jobs-branch="main":
+    git subtree push --prefix=extensions/pi-jobs git@github.com:ferologics/pi-jobs.git {{pi-jobs-branch}}
 
 publish-pi-notify pi-notify-branch="master":
     git subtree push --prefix=extensions/pi-notify git@github.com:ferologics/pi-notify.git {{pi-notify-branch}}
@@ -92,11 +96,12 @@ repair-pull:
 pull-skills skills-branch="master":
     git subtree pull --prefix=skills pi-skills {{skills-branch}}
 
-pull-extensions extensions-branch="main" pi-deep-review-branch="main" pi-ghostty-hunk-branch="main" pi-ghostty-lazygit-branch="main" pi-notify-branch="master" pi-quote-copy-branch="main" pi-system-theme-branch="main" pi-verbosity-control-branch="main":
+pull-extensions extensions-branch="main" pi-deep-review-branch="main" pi-ghostty-hunk-branch="main" pi-ghostty-lazygit-branch="main" pi-jobs-branch="main" pi-notify-branch="master" pi-quote-copy-branch="main" pi-system-theme-branch="main" pi-verbosity-control-branch="main":
     git subtree pull --prefix=extensions pi-extensions {{extensions-branch}}
     just pull-pi-deep-review pi-deep-review-branch={{pi-deep-review-branch}}
     just pull-pi-ghostty-hunk pi-ghostty-hunk-branch={{pi-ghostty-hunk-branch}}
     just pull-pi-ghostty-lazygit pi-ghostty-lazygit-branch={{pi-ghostty-lazygit-branch}}
+    just pull-pi-jobs pi-jobs-branch={{pi-jobs-branch}}
     just pull-pi-notify pi-notify-branch={{pi-notify-branch}}
     just pull-pi-quote-copy pi-quote-copy-branch={{pi-quote-copy-branch}}
     just pull-pi-system-theme pi-system-theme-branch={{pi-system-theme-branch}}
@@ -110,6 +115,9 @@ pull-pi-ghostty-hunk pi-ghostty-hunk-branch="main":
 
 pull-pi-ghostty-lazygit pi-ghostty-lazygit-branch="main":
     git subtree pull --prefix=extensions/pi-ghostty-lazygit git@github.com:ferologics/pi-ghostty-lazygit.git {{pi-ghostty-lazygit-branch}}
+
+pull-pi-jobs pi-jobs-branch="main":
+    git subtree pull --prefix=extensions/pi-jobs git@github.com:ferologics/pi-jobs.git {{pi-jobs-branch}}
 
 pull-pi-notify pi-notify-branch="master":
     git subtree pull --prefix=extensions/pi-notify git@github.com:ferologics/pi-notify.git {{pi-notify-branch}}
