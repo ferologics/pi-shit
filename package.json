@@ -22,6 +22,7 @@
     "pi": {
         "extensions": [
             "extensions/deep-review/index.ts",
+            "extensions/pi-env-guard/index.ts",
             "extensions/pi-ghostty-hunk/index.ts",
             "extensions/pi-ghostty-lazygit/index.ts",
             "extensions/pi-jobs/index.ts",
