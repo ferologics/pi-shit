@@ -38,12 +38,13 @@
         "skills": [
             "skills/brave-search/SKILL.md",
             "skills/code-review/SKILL.md",
-            "skills/code-simplifier/SKILL.md",
             "skills/context-packer/SKILL.md",
+            "skills/deslop/SKILL.md",
             "skills/image-compress/SKILL.md",
             "skills/markdown-converter/SKILL.md",
             "skills/multi-review/SKILL.md",
             "skills/pr-context-packer/SKILL.md",
+            "skills/review-triage/SKILL.md",
             "skills/session-analyzer/SKILL.md",
             "skills/video-compress/SKILL.md",
             "skills/youtube-transcript/SKILL.md"
