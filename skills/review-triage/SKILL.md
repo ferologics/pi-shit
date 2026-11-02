@@ -1,6 +1,6 @@
 ---
 name: review-triage
-description: Triage code review findings before changing code. Verify each one, separate the symptom from the proposed fix, and let the user pick what to fix. Use when acting on review findings from /review, a reviewer agent, or PR comments.
+description: Triage code review findings before changing code. Verify each one, separate the symptom from the proposed fix, and let the user pick what to fix. Use right after you write review findings in a /review branch.
 ---
 
 # Review Triage
@@ -44,6 +44,7 @@ Below it, give the directions for each `fix` and `ask` row in one to three lines
 - No adjacent cleanup, refactors, or extra hardening.
 - Show a correctness fix failing before and passing after when it can be reproduced, with the repo's existing test style for that area or a command. Then run the relevant checks.
 - Report per finding: files and net lines changed, the proof, and anything skipped with the reason.
+- In a `/review` branch, end by telling the user to return with `/end-review` and "Return and summarize", so the main session learns what changed.
 
 Don't ask for another full review afterwards. For a recheck, review only the fix diff against the accepted findings.
 
