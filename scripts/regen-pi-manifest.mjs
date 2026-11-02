@@ -40,6 +40,9 @@ function listThemeFiles(baseDir) {
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
 
 const extensions = listDirectoriesWithMarker("extensions", "index.ts");
+// pi-review is a subtree of earendil-works/pi-review (entry file review.ts). Its triage turn runs
+// pi-shit's review-triage skill, so only the root package loads it, not the extensions mirror.
+const rootOnlyExtensions = ["extensions/pi-review/review.ts"];
 const skills = listDirectoriesWithMarker("skills", "SKILL.md");
 const themes = listThemeFiles("themes");
 
@@ -52,7 +55,7 @@ if (skills.length === 0) {
 }
 
 packageJson.pi = packageJson.pi || {};
-packageJson.pi.extensions = extensions;
+packageJson.pi.extensions = [...extensions, ...rootOnlyExtensions].sort();
 packageJson.pi.skills = skills;
 packageJson.pi.themes = themes.length > 0 ? themes : ["themes"];
 

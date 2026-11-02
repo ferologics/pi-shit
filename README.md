@@ -4,7 +4,7 @@ Combined Pi package for personal extensions + skills.
 
 ## Structure
 
-- `extensions/` → Pi extensions (for example `deep-review`, `pi-env-guard`, `pi-ghostty-hunk`, `pi-ghostty-lazygit`, `pi-jobs`, `pi-quote-copy`, `pi-slack-user`, `pi-system-theme`, `pi-web`, `plan-mode`, `pi-verbosity-control`, `the-dude`)
+- `extensions/` → Pi extensions (for example `deep-review`, `pi-env-guard`, `pi-ghostty-hunk`, `pi-ghostty-lazygit`, `pi-jobs`, `pi-quote-copy`, `pi-slack-user`, `pi-system-theme`, `pi-web`, `plan-mode`, `pi-verbosity-control`, `the-dude`), plus `pi-review`, a subtree of `earendil-works/pi-review` (see `AGENTS.md`)
 - `skills/` → Pi skills (including `pr-context-packer`)
 - `themes/` → Pi themes (`rose-pine`, `rose-pine-dawn`)
 

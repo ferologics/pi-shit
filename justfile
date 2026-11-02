@@ -139,6 +139,10 @@ pull-pi-verbosity-control pi-verbosity-control-branch="main":
 pull-pi-web pi-web-branch="main":
     git subtree pull --prefix=extensions/pi-web git@github.com:ferologics/pi-web.git {{pi-web-branch}}
 
+# Merge new earendil-works/pi-review commits into extensions/pi-review (squashed subtree; our changes stay on top)
+pull-pi-review-upstream:
+    git subtree pull --prefix=extensions/pi-review https://github.com/earendil-works/pi-review.git main --squash
+
 update-themes:
     mkdir -p themes
     curl -fsSL https://raw.githubusercontent.com/zenobi-us/pi-rose-pine/main/themes/rose-pine-main.json -o themes/rose-pine.json

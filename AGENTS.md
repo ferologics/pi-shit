@@ -48,6 +48,16 @@ If an emergency downstream hotfix is unavoidable in `~/dev/pi-skills`, `~/dev/pi
 2. Run the matching `just pull-*` in this repo to pull it back.
 3. Resume normal work from `pi-shit` only.
 
+## Upstream subtree: pi-review
+
+`extensions/pi-review/` is a squashed git subtree of `earendil-works/pi-review` (the `/review` extension). Our changes are normal pi-shit commits on top: PR #20 (the reviewer gets the PR description), a rubric bullet for band-aids, and a triage turn after every review that runs `/skill:review-triage`.
+
+- `just pull-pi-review-upstream` merges new upstream commits. It is inbound only; nothing is published back.
+- Upstream's `package.json`, lockfile, `tsconfig.json`, and `.gitignore` are deleted here. If upstream changes one of them, the pull conflicts on it; delete it again.
+- Only the root package loads it: `extensions/pi-review/review.ts` is in the root manifest, and `scripts/regen-pi-manifest.mjs` keeps it there. The `extensions/` mirror carries the files but doesn't load them, because the triage turn needs the `review-triage` skill from `skills/`.
+- biome and dprint skip it, so upstream's formatting stays and pulls don't conflict. `tsc` still type-checks it against the installed Pi.
+- `review-triage` has `disable-model-invocation: true`: it never triggers on its own, and runs only through `/skill:review-triage`, which the triage turn sends and you can also type.
+
 ## Release workflow (important)
 
 Use `just release` to orchestrate version bumps, mirror publish, and GitHub releases (npm publish runs in per-repo trusted publisher workflows).
