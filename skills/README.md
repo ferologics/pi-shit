@@ -53,11 +53,6 @@ npm install -g @sibyllinesoft/scribe  # optional but recommended
 brew install gh                        # optional: auto-include PR title/body
 # Optional: pbcopy (macOS) or wl-copy (Linux)
 
-# review-triage (with pi-review)
-# Finish a review with /end-review -> "Return and summarize", then /skill:review-triage.
-# Optional, per repo: copy review-triage/references/review-guidelines.md to REVIEW_GUIDELINES.md
-# next to the repo's .pi/ directory so the reviewer verifies its findings and reports symptoms, not fixes.
-
 # image-compress
 # No deps - uses macOS built-in sips
 
