@@ -34,7 +34,7 @@
             "extensions/pi-verbosity-control/index.ts",
             "extensions/pi-web/index.ts",
             "extensions/plan-mode/index.ts",
-            "extensions/the-dude/index.ts"
+            "extensions/tank/index.ts"
         ],
         "skills": [
             "skills/brave-search/SKILL.md",
