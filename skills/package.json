@@ -21,6 +21,7 @@
             "markdown-converter",
             "multi-review",
             "pr-context-packer",
+            "rethink-tests",
             "review-triage",
             "session-analyzer",
             "video-compress",
