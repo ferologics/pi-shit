@@ -12,6 +12,7 @@
     },
     "pi": {
         "skills": [
+            "arch-audit",
             "brave-search",
             "code-review",
             "context-packer",

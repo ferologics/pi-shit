@@ -38,6 +38,7 @@
             "extensions/tank/index.ts"
         ],
         "skills": [
+            "skills/arch-audit/SKILL.md",
             "skills/brave-search/SKILL.md",
             "skills/code-review/SKILL.md",
             "skills/context-packer/SKILL.md",
