@@ -29,6 +29,7 @@
             "extensions/pi-notify/index.ts",
             "extensions/pi-quote-copy/index.ts",
             "extensions/pi-review/review.ts",
+            "extensions/pi-rex-split/index.ts",
             "extensions/pi-slack-user/index.ts",
             "extensions/pi-system-theme/index.ts",
             "extensions/pi-verbosity-control/index.ts",
