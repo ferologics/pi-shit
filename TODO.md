@@ -28,7 +28,7 @@
 - [x] Configure npm Trusted Publishers (OIDC) in npm for each package/repo/workflow pair (`pi-shit`, `@ferologics/pi-extensions`, `@ferologics/pi-skills`, `@ferologics/pi-web`, `pi-deep-review`, `pi-notify`, `pi-quote-copy`, `pi-system-theme`).
 - [ ] Decide long-term release orchestration split (local `just release` vs GitHub-first), including auto-tagging/version bump ownership and rollback flow.
 - [x] Bootstrap npm for standalone `pi-quote-copy`: `0.1.0` published, trusted publisher configured, GitHub release `v0.1.0` created. `just release pi-quote-copy <bump>` handles later releases.
-- [ ] Release the unpublished `pi-notify` change (`8131b8d`, native OSC 777 on Windows Terminal): npm and the `ferologics/pi-notify` mirror still have the pre-change `1.4.0`. Run `just release pi-notify patch`.
+- [ ] Release `pi-notify` 1.5.0 (`agent_settled`, TUI only, `PI_NOTIFY_PROTOCOL`, toast fix, `pi-notify:before-notify`): npm and the `ferologics/pi-notify` mirror still have `1.4.0`. Run `just release pi-notify minor`, then post the replies on the mirror's open issues and PRs.
 - [x] Bootstrap npm for standalone `@ferologics/pi-web` (unscoped `pi-web` belongs to someone else): `0.1.0` published, trusted publisher configured, GitHub release `v0.1.0` created. `just release @ferologics/pi-web <bump>` handles later releases.
 
 ## Decide strategy for upstream Pi example extensions
